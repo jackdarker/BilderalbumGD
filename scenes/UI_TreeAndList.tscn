@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://duvxw865blrtb"]
+
+[sub_resource type="GDScript" id="GDScript_iim7v"]
+script/source = "extends Control
+
+func _ready() -> void:
+	$ItemList.add_item()
+	pass
+"
+
+[node name="UiTreeAndList" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_iim7v")
+
+[node name="ItemList" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 64.0
+offset_right = 352.0
+offset_bottom = 240.0
+item_count = 2
+item_0/text = "Item1"
+item_1/text = "Item2"

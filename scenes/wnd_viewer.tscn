@@ -1,0 +1,62 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdgukpb1yb3s0"]
+
+[ext_resource type="Script" uid="uid://bs83yv82qi3vu" path="res://scenes/wnd_viewer.gd" id="1_g6ech"]
+[ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="2_tc348"]
+[ext_resource type="PackedScene" uid="uid://c8qw0h1nshdir" path="res://scenes/ImageListItem.tscn" id="3_cq3pd"]
+
+[node name="Viewer" type="Control" groups=["Persist"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_g6ech")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Container" type="FoldableContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Container"]
+layout_mode = 2
+
+[node name="btNewBrowser" type="Button" parent="HBoxContainer/Container/VBoxContainer"]
+layout_mode = 2
+text = "New Browser"
+
+[node name="btSettings" type="Button" parent="HBoxContainer/Container/VBoxContainer"]
+layout_mode = 2
+text = "Settings...
+"
+
+[node name="ImageList" type="ScrollContainer" parent="HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+theme = ExtResource("2_tc348")
+
+[node name="BoxContainer" type="VBoxContainer" parent="HBoxContainer/ImageList"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ImageListItem" parent="HBoxContainer/ImageList/BoxContainer" instance=ExtResource("3_cq3pd")]
+layout_mode = 2
+
+[node name="ImageListItem2" parent="HBoxContainer/ImageList/BoxContainer" instance=ExtResource("3_cq3pd")]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 1
+stretch_mode = 3
+
+[connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btNewBrowser" to="." method="_on_bt_new_browser_pressed"]
