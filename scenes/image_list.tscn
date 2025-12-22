@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3 uid="uid://dhjm5iedpepfd"]
+
+[ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="1_65jmy"]
+[ext_resource type="Script" uid="uid://c3ji20pa063vr" path="res://scenes/image_list.gd" id="2_saagr"]
+[ext_resource type="PackedScene" uid="uid://c8qw0h1nshdir" path="res://scenes/ImageListItem.tscn" id="2_u4a67"]
+[ext_resource type="Script" uid="uid://b5f62iwcf3udj" path="res://scenes/image_list_area.gd" id="3_saagr"]
+
+[node name="ImageList" type="Control"]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 302.0
+offset_bottom = 426.0
+theme = ExtResource("1_65jmy")
+script = ExtResource("2_saagr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_65jmy")
+
+[node name="bt_prev" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "<"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_65jmy")
+selected = 0
+item_count = 1
+popup/item_0/text = "1"
+popup/item_0/id = 0
+
+[node name="bt_next" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = ">"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_saagr")
+
+[node name="BoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ImageListItem" parent="VBoxContainer/ScrollContainer/BoxContainer" instance=ExtResource("2_u4a67")]
+layout_mode = 2
+
+[node name="ImageListItem2" parent="VBoxContainer/ScrollContainer/BoxContainer" instance=ExtResource("2_u4a67")]
+layout_mode = 2

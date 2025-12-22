@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dgcscmok8h51i"]
+[gd_scene load_steps=3 format=3 uid="uid://dgcscmok8h51i"]
 
 [ext_resource type="Script" uid="uid://drj034ayuaque" path="res://scenes/wnd_browser.gd" id="1_q3mf3"]
-[ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="2_1tdb2"]
-[ext_resource type="PackedScene" uid="uid://c8qw0h1nshdir" path="res://scenes/ImageListItem.tscn" id="3_rnki1"]
+[ext_resource type="PackedScene" uid="uid://dhjm5iedpepfd" path="res://scenes/image_list.tscn" id="2_oiot5"]
 
 [node name="window" type="Window" groups=["Persist"]]
 oversampling_override = 1.0
@@ -54,20 +53,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="ImageList" type="ScrollContainer" parent="HBoxContainer/HSplitContainer"]
+[node name="ImageList" parent="HBoxContainer/HSplitContainer" instance=ExtResource("2_oiot5")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 100)
-layout_mode = 2
-theme = ExtResource("2_1tdb2")
-
-[node name="BoxContainer" type="VBoxContainer" parent="HBoxContainer/HSplitContainer/ImageList"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ImageListItem" parent="HBoxContainer/HSplitContainer/ImageList/BoxContainer" instance=ExtResource("3_rnki1")]
-layout_mode = 2
-
-[node name="ImageListItem2" parent="HBoxContainer/HSplitContainer/ImageList/BoxContainer" instance=ExtResource("3_rnki1")]
 layout_mode = 2
 
 [node name="FileDialog" type="FileDialog" parent="."]

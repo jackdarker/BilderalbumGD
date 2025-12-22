@@ -1,6 +1,7 @@
 extends Node
 
 var current_scene = null
+var settings:Settings =Settings.new()
 
 func goto_scene(path):
 	# This function will usually be called from a signal callback,
@@ -83,7 +84,7 @@ class Task extends Object:
 			finished.emit(taskid)
 
 var tasks=[]
-func create_task(action:Callable,high_priority=false,args=[]):
+func create_task(action:Callable,high_priority=false):
 	var taskid= WorkerThreadPool.add_task(action,high_priority)
 	var task = Task.new(taskid)
 	tasks.append(task)

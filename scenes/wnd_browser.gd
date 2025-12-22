@@ -8,7 +8,15 @@ signal selected(path:String)
 var UID:int
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	%ImageList.bt_prev.pressed.connect(switchPage.bind(-1,true))
+	%ImageList.bt_next.pressed.connect(switchPage.bind(1,true))
+	%ImageList.bt_page.item_selected.connect(switchPage.bind(false))
+	%ImageList.list.get_parent().can_drop=can_drop
+	item_created.connect(updateList)
+	all_item_created.connect(%ImageList.updatePageCtrl)
 	buildTree()
+
+
 
 func saveData()->Dictionary:
 	var data ={
@@ -42,29 +50,8 @@ func _displayImage(path)->void:
 	_actual_image=path
 	selected.emit(path)
 
-func _loadImgToList(path)->void:
-	var _Item=SceneListItem.instantiate()
-	var image = Image.load_from_file(path)
-	var ThumbnailSize = 128
-	var Width =0
-	var Height = 0
-	var Ratio = image.get_width() / float(image.get_height())
-	if Ratio>= 1.0:
-		Width = ThumbnailSize;
-		Height = (Width * image.get_height()) / float(image.get_width());
-	else:
-		Height = ThumbnailSize;
-		Width = (Height * image.get_width()) / float(image.get_height());
-
-	image.resize(Width,Height)
-	var texture = ImageTexture.create_from_image(image)
-	_Item.get_node("TextureRect").texture=texture
-	_Item.get_node("Label").text=path
-	_Item.selected.connect(_displayImage)
-	%ImageList.get_child(0).add_child(_Item)
-
 func _clearImgList()->void:
-	var node=%ImageList.get_child(0)
+	var node=%ImageList.list
 	for n in node.get_children():
 		node.remove_child(n)
 		n.queue_free()
@@ -79,16 +66,16 @@ func _clearDirTree(item:TreeItem)->void:
 func buildTree() -> void:
 	_clearDirTree(null)
 	var tree=%Tree
-	var root = tree.create_item()
+	var root:TreeItem = tree.create_item()
 	tree.hide_root = true
-	#root.set_text(0,"d:/temp")
 	root.set_metadata(0,"")
 	var d=DirAccess.get_drive_count()
 	for i in d:
-		var drive=tree.create_item(root)
+		var drive:TreeItem=tree.create_item(root)
 		var letter=DirAccess.get_drive_name(i)
 		drive.set_text(0,letter)
 		drive.set_metadata(0,letter)
+		drive.collapsed=true
 
 	_appendDir(root)
 	
@@ -108,10 +95,10 @@ func _appendDir(item: TreeItem)->void:
 			var file_name = dir.get_next()
 			while file_name != "":
 				if dir.current_is_dir():
-					var node=tree.create_item(item)
+					var node:TreeItem=tree.create_item(item)
 					node.set_text(0,file_name)
 					node.set_metadata(0,dir.get_current_dir().path_join(file_name))
-					tree.create_item(node)
+					tree.create_item(node)	#add a placeholder for digging deeper
 					node.collapsed=true
 				file_name = dir.get_next()
 			dir.list_dir_end()
@@ -125,16 +112,19 @@ func _on_tree_item_collapsed(item: TreeItem) -> void:
 
 func _on_tree_item_selected() -> void:
 	var item=%Tree.get_selected()
-	_fetchImagesThreaded(item.get_metadata(0))
+	_fetchImagesThreaded(item.get_metadata(0),0)
 
 signal item_created(item)
-func _fetchImagesThreaded(dir_path)->void:
+signal all_item_created(page,pages)
+func _fetchImagesThreaded(dir_path,page:int)->void:
 	_clearImgList()
-	item_created.connect(updateList)
-	Global.create_task(fetchImagesByThread.bind(dir_path))
+	Global.create_task(fetchImagesByThread.bind(dir_path,page))
 
-func fetchImagesByThread(dir_path):
+func fetchImagesByThread(dir_path,page):
 	var dir = DirAccess.open(dir_path)
+	var start=Global.settings.Listitems*page
+	var end=Global.settings.Listitems*(1+page)
+	var count=0
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
@@ -143,34 +133,45 @@ func fetchImagesByThread(dir_path):
 				pass
 			else:
 				if Global.isSupportedImage(file_name):
-					var path=dir_path.path_join(file_name)
-					var _Item=SceneListItem.instantiate()
-					var image = Image.load_from_file(path)
-					var ThumbnailSize = 128
-					var Width =0
-					var Height = 0
-					var Ratio = image.get_width() / float(image.get_height())
-					if Ratio>= 1.0:
-						Width = ThumbnailSize;
-						Height = (Width * image.get_height()) / float(image.get_width());
-					else:
-						Height = ThumbnailSize;
-						Width = (Height * image.get_width()) / float(image.get_height());
-
-					image.resize(Width,Height)
-					var texture = ImageTexture.create_from_image(image)
-					_Item.get_node("TextureRect").texture=texture
-					_Item.get_node("Label").text=path
-					item_created.emit.call_deferred(_Item)
+					if (count>=start && count <end):
+						var path=dir_path.path_join(file_name)
+						item_created.emit.call_deferred(_create_item(path))
+					count=count+1
 			file_name = dir.get_next()
 		dir.list_dir_end()
+		all_item_created.emit.call_deferred(page,ceili(count/Global.settings.Listitems))
 	else:
 		print("An error occurred when trying to access the path.")
 
+func _create_item(path)-> Object:
+	var _Item=SceneListItem.instantiate()
+	var image = Image.load_from_file(path)
+	var ThumbnailSize = Global.settings.Itemsize
+	var Width =0
+	var Height = 0
+	var Ratio = image.get_width() / float(image.get_height())
+	if Ratio>= 1.0:
+		Width = ThumbnailSize;
+		Height = (Width * image.get_height()) / float(image.get_width());
+	else:
+		Height = ThumbnailSize;
+		Width = (Height * image.get_width()) / float(image.get_height());
+
+	image.resize(Width,Height)
+	var texture = ImageTexture.create_from_image(image)
+	_Item.get_node("TextureRect").texture=texture
+	_Item.get_node("Label").text=path
+	return _Item
+
 func updateList(item):
 	item.selected.connect(_displayImage)
-	%ImageList.get_child(0).add_child(item)
+	%ImageList.list.add_child(item)
 
+func switchPage(increment,relative):
+	var page=%ImageList.bt_page.selected
+	if(relative):
+		page+=increment
+	_fetchImagesThreaded(%Tree.get_selected().get_metadata(0),page)
 
 func _on_close_requested() -> void:
 	hide()
@@ -182,7 +183,3 @@ func _on_button_4_pressed() -> void:
 
 func _on_button_5_pressed() -> void:
 	SaveLoadMgr.load("c://temp//savegame.save")
-
-func _on_texture_rect_resized() -> void:
-	if _actual_image:
-		_displayImage(_actual_image)
