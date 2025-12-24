@@ -62,6 +62,10 @@ size_flags_horizontal = 3
 expand_mode = 1
 stretch_mode = 3
 
+[node name="ResizeTimer" type="Timer" parent="HBoxContainer/TextureRect"]
+wait_time = 0.25
+one_shot = true
+
 [node name="WndSettings" parent="." instance=ExtResource("4_l78x7")]
 unique_name_in_owner = true
 visible = false
@@ -69,3 +73,4 @@ visible = false
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btNewBrowser" to="." method="_on_bt_new_browser_pressed"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btSettings" to="." method="_on_bt_settings_pressed"]
 [connection signal="resized" from="HBoxContainer/TextureRect" to="." method="_on_texture_rect_resized"]
+[connection signal="timeout" from="HBoxContainer/TextureRect/ResizeTimer" to="." method="_on_resize_timer_timeout"]

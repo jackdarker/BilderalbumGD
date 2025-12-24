@@ -11,13 +11,32 @@ func _ready() -> void:
 	%ImageList.bt_prev.pressed.connect(switchPage.bind(-1,true))
 	%ImageList.bt_next.pressed.connect(switchPage.bind(1,true))
 	%ImageList.bt_page.item_selected.connect(switchPage.bind(false))
-	%ImageList.list.get_parent().can_drop=can_drop
+	
+	%ImageList.list.get_parent().can_drop=can_drop_file
+	%ImageList.list.get_parent().drop=drop_file
+	$WndMove.done.connect(switchPage.bind(0,true))
+	$WndMove.visible=false
+	Global.file_moved.connect(extRefresh)
+	
 	item_created.connect(updateList)
 	all_item_created.connect(%ImageList.updatePageCtrl)
 	buildTree()
 
+func can_drop_file(at_position: Vector2, data: Variant):
+	return(data is String)
 
+func drop_file(at_position: Vector2, data: Variant):
+	$WndMove.from=(data as String)
+	$WndMove.to=actual_dir
+	$WndMove.show()
+	pass
 
+func extRefresh(path:String):
+	#on notification of filemove 
+	if(actual_dir!=path.get_base_dir()):
+		return
+	switchPage(0,true)
+	
 func saveData()->Dictionary:
 	var data ={
 		"filename" : get_scene_file_path(),
@@ -45,9 +64,7 @@ func _on_file_dialog_file_selected(path: String) -> void:
 	%TextureRect.texture=texture
 
 
-var _actual_image=null	
 func _displayImage(path)->void:	
-	_actual_image=path
 	selected.emit(path)
 
 func _clearImgList()->void:
@@ -110,9 +127,10 @@ func _on_tree_item_collapsed(item: TreeItem) -> void:
 		return
 	call_deferred("_appendDir",item)	#if called directly tree.create_item(item) returns null?!
 
+var actual_dir=null
 func _on_tree_item_selected() -> void:
-	var item=%Tree.get_selected()
-	_fetchImagesThreaded(item.get_metadata(0),0)
+	actual_dir=%Tree.get_selected().get_metadata(0)
+	_fetchImagesThreaded(actual_dir,0)
 
 signal item_created(item)
 signal all_item_created(page,pages)
@@ -171,7 +189,7 @@ func switchPage(increment,relative):
 	var page=%ImageList.bt_page.selected
 	if(relative):
 		page+=increment
-	_fetchImagesThreaded(%Tree.get_selected().get_metadata(0),page)
+	_fetchImagesThreaded(actual_dir,page)
 
 func _on_close_requested() -> void:
 	hide()

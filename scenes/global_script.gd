@@ -1,5 +1,7 @@
 extends Node
 
+signal file_moved(path:String)
+
 var current_scene = null
 var settings:Settings =Settings.new()
 
@@ -13,7 +15,6 @@ func goto_scene(path):
 	# The solution is to defer the load to a later time, when
 	# we can be sure that no code from the current scene is running:
 	_deferred_goto_scene.call_deferred(path)
-
 
 func _deferred_goto_scene(path):
 	# It is now safe to remove the current scene.
@@ -32,6 +33,7 @@ func _ready() -> void:
 	var root = get_tree().root
 	# Using a negative index counts from the end, so this gets the last child node of `root`.
 	current_scene = root.get_child(-1)
+	loadFromFile()
 
 func quitGodot():
 	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
@@ -40,6 +42,7 @@ func quitGodot():
 func getGlobalViewer():
 	return get_tree().root.get_node("Viewer")
 
+#region image tools
 func isSupportedImage(file_name)->bool:
 	match file_name.get_extension().to_lower() :
 		"png","jpg","jpeg","tga","webp":
@@ -65,6 +68,7 @@ func loadImgToTexture(path,max_width,max_height)->ImageTexture:
 		pass
 	var texture = ImageTexture.create_from_image(image)
 	return(texture)
+#endregion
 
 #region tasks
 # Task is a wrapper for a thread; use create_task to spawn and wait for finished-signal
@@ -100,3 +104,41 @@ func _process(_delta: float) -> void:
 		tasks.erase(task)
 	
 #endregion	
+
+#region settings
+var SETTINGS_FILE="user://Settings.save"	
+#located in C:\Users\xxx\AppData\Roaming\Godot\app_userdata\BilderalbumGD
+
+func saveToFile():
+	var _path=SETTINGS_FILE
+	var saveData = saveData()
+	var save_game=FileAccess.open(_path, FileAccess.WRITE)
+	save_game.store_string(JSON.stringify(saveData))
+	save_game.close()
+	
+func loadFromFile():
+	var _path=SETTINGS_FILE
+	if not FileAccess.file_exists(_path):
+		#Log.error("Save file is not found in "+str(_path))
+		#assert(false, "Save file is not found in "+str(_path))
+		return # Error! We don't have a save to load.
+	
+	var save_game=FileAccess.open(_path, FileAccess.READ)
+	#var saveData = parse_json(save_game.get_as_text())
+	var json=JSON.new()
+	var jsonResult = json.parse(save_game.get_as_text())
+	if(jsonResult != OK):
+		assert(false, "Trying to load a bad save file "+str(_path))
+		return
+	
+	loadData(json.data)
+	save_game.close()
+
+func loadData(data):
+	Global.settings.loadData(data)
+	pass
+	
+func saveData()->Variant:
+	return(Global.settings.saveData())
+	pass
+#region

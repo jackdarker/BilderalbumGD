@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgcscmok8h51i"]
+[gd_scene load_steps=4 format=3 uid="uid://dgcscmok8h51i"]
 
 [ext_resource type="Script" uid="uid://drj034ayuaque" path="res://scenes/wnd_browser.gd" id="1_q3mf3"]
 [ext_resource type="PackedScene" uid="uid://dhjm5iedpepfd" path="res://scenes/image_list.tscn" id="2_oiot5"]
+[ext_resource type="PackedScene" uid="uid://b0vrw0uwpwgyv" path="res://scenes/wnd_move_file.tscn" id="3_q3mf3"]
 
 [node name="window" type="Window" groups=["Persist"]]
 oversampling_override = 1.0
@@ -63,6 +64,9 @@ oversampling_override = 1.0
 title = "Open a File"
 file_mode = 0
 access = 2
+
+[node name="WndMove" parent="." instance=ExtResource("3_q3mf3")]
+visible = false
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="size_changed" from="." to="." method="_on_size_changed"]

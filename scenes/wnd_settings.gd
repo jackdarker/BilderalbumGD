@@ -12,4 +12,5 @@ func _on_bt_ok_pressed() -> void:
 	#todo validate
 	Global.settings.Listitems=$Panel/MarginContainer/GridContainer/i_listitems.value
 	Global.settings.Itemsize=$Panel/MarginContainer/GridContainer/i_previewsize.value
+	Global.saveToFile()
 	self.hide()

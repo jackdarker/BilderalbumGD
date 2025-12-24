@@ -23,6 +23,10 @@ func _on_bt_settings_pressed() -> void:
 	%WndSettings.process_mode=Node.PROCESS_MODE_ALWAYS
 	%WndSettings.show()
 
+#as resized is fred constantly it would waste a lot of processing if we continously resize image
 func _on_texture_rect_resized() -> void:
+	$HBoxContainer/TextureRect/ResizeTimer.start()
+
+func _on_resize_timer_timeout() -> void:
 	if _actual_image:
 		displayImage(_actual_image)

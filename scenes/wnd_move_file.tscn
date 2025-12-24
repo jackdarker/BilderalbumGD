@@ -1,0 +1,83 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0vrw0uwpwgyv"]
+
+[ext_resource type="Script" uid="uid://bq6agej864nn4" path="res://scenes/wnd_move_file.gd" id="1_p6jd7"]
+[ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="2_fcp2x"]
+
+[node name="WndMove" type="Window"]
+oversampling_override = 1.0
+title = "Move File"
+initial_position = 2
+size = Vector2i(400, 400)
+script = ExtResource("1_p6jd7")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_fcp2x")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+
+[node name="GridContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Move and rename file"
+
+[node name="from" type="Label" parent="Panel/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+text = "from"
+autowrap_mode = 3
+
+[node name="to" type="Label" parent="Panel/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+text = "to"
+autowrap_mode = 3
+
+[node name="Edit" type="LineEdit" parent="Panel/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "size of preview images"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="bt_ok" type="Button" parent="Panel/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+text = "OK"
+
+[node name="bt_cancle" type="Button" parent="Panel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Cancle"
+
+[node name="bt_delete" type="Button" parent="Panel/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Delete"
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="text_changed" from="Panel/MarginContainer/GridContainer/Edit" to="." method="_on_edit_text_changed"]
+[connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/bt_ok" to="." method="_on_bt_ok_pressed"]
+[connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/bt_cancle" to="." method="_on_bt_cancle_pressed"]
+[connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/bt_delete" to="." method="_on_bt_delete_pressed"]
