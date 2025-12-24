@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dhjm5iedpepfd" path="res://scenes/image_list.tscn" id="2_oiot5"]
 [ext_resource type="PackedScene" uid="uid://b0vrw0uwpwgyv" path="res://scenes/wnd_move_file.tscn" id="3_q3mf3"]
 
-[node name="window" type="Window" groups=["Persist"]]
+[node name="window" type="Window" groups=["Items", "Persist"]]
 oversampling_override = 1.0
 title = "Browser"
 position = Vector2i(0, 36)

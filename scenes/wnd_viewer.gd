@@ -1,7 +1,6 @@
 extends Control
 
 @onready var SceneListItem = load("res://scenes/ImageListItem.tscn")
-@onready var SceneBrowser = preload("res://scenes/wnd_browser.tscn")
 
 func _ready() -> void:
 	pass
@@ -11,13 +10,8 @@ func displayImage(path)->void:
 	%TextureRect.texture=Global.loadImgToTexture(path,%TextureRect.size.x,%TextureRect.size.y)
 	_actual_image=path	
 
-
-
 func _on_bt_new_browser_pressed() -> void:
-	var s=SceneBrowser.instantiate()
-	s.selected.connect(displayImage)
-	self.get_tree().root.add_child(s)
-
+	Global.createBrowser()
 
 func _on_bt_settings_pressed() -> void:
 	%WndSettings.process_mode=Node.PROCESS_MODE_ALWAYS
@@ -30,3 +24,6 @@ func _on_texture_rect_resized() -> void:
 func _on_resize_timer_timeout() -> void:
 	if _actual_image:
 		displayImage(_actual_image)
+
+func _on_tree_exiting() -> void:
+	Global.onQuitting()

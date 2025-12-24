@@ -5,6 +5,8 @@ signal file_moved(path:String)
 var current_scene = null
 var settings:Settings =Settings.new()
 
+var SceneBrowser = preload("res://scenes/wnd_browser.tscn")
+
 func goto_scene(path):
 	# This function will usually be called from a signal callback,
 	# or some other function in the current scene.
@@ -38,9 +40,18 @@ func _ready() -> void:
 func quitGodot():
 	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	get_tree().quit()
+
+func onQuitting():
+	pass
 	
 func getGlobalViewer():
 	return get_tree().root.get_node("Viewer")
+
+func createBrowser():
+	var s=SceneBrowser.instantiate()
+	s.selected.connect(getGlobalViewer().displayImage)
+	self.get_tree().root.add_child.call_deferred(s)
+	return s
 
 #region image tools
 func isSupportedImage(file_name)->bool:
@@ -133,12 +144,35 @@ func loadFromFile():
 	
 	loadData(json.data)
 	save_game.close()
-
+var myPromise
 func loadData(data):
-	Global.settings.loadData(data)
+	Global.settings.loadData(data.settings)
+	if(data.browsers.size()>0):
+		var dialog = ConfirmationDialog.new() 
+		dialog.title = "Restore windows?" 
+		dialog.dialog_text = dialog.title
+		#dialog.canceled.connect(dialog_canceled)
+		#dialog.confirmed.connect(dialog_confirmed)
+		myPromise=Promise.new([dialog.canceled,dialog.confirmed])
+		add_child(dialog)	
+		dialog.popup_centered() # center on screen
+		dialog.show()
+		var res = await myPromise.completed
+		if(res[0][0]==dialog.confirmed.get_name()):
+			for item in data.browsers:
+				var s=createBrowser()
+				s.loadData(item)
 	pass
 	
 func saveData()->Variant:
-	return(Global.settings.saveData())
-	pass
+	var data ={
+		"settings":Global.settings.saveData(),
+		"browsers": [],
+	}
+	var save_nodes = get_tree().get_nodes_in_group("Items")
+	for node in save_nodes:
+		data.browsers.append(node.saveData())
+		
+	return(data)
+
 #region

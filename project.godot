@@ -35,7 +35,6 @@ enabled=PackedStringArray()
 [global_group]
 
 Items=""
-Ghosts=""
 Persist=""
 
 [input]

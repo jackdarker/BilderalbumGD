@@ -32,25 +32,36 @@ func drop_file(at_position: Vector2, data: Variant):
 	pass
 
 func extRefresh(path:String):
-	#on notification of filemove 
+	#on notification of filemove
 	if(actual_dir!=path.get_base_dir()):
 		return
 	switchPage(0,true)
+
+func navigateTo(path:String):
+	#expand the directory-tree to match path		#todo
+	pass
+
 	
 func saveData()->Dictionary:
 	var data ={
-		"filename" : get_scene_file_path(),
+		"scene" : get_scene_file_path(),
 		"parent" : get_parent().get_path(),
 		"UID":UID,
 		"x":position.x,
 		"y":position.y,
+		"w":size.x,
+		"h":size.y,
+		"actual_dir":actual_dir
 	}
 	return data
 
 func loadData(data: Dictionary):
 	position.x = data["x"]
 	position.y = data["y"]
+	size.x=data["w"]
+	size.y=data["h"]
 	UID=data["UID"]
+	navigateTo(data["actual_dir"])
 
 func _on_button_pressed() -> void:
 	%FileDialog.popup_centered_ratio()
@@ -130,6 +141,7 @@ func _on_tree_item_collapsed(item: TreeItem) -> void:
 var actual_dir=null
 func _on_tree_item_selected() -> void:
 	actual_dir=%Tree.get_selected().get_metadata(0)
+	$".".title="Browser "+actual_dir
 	_fetchImagesThreaded(actual_dir,0)
 
 signal item_created(item)
