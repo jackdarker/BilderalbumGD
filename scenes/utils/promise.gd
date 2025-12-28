@@ -1,4 +1,4 @@
-class_name Promise  extends RefCounted
+class_name Promise  extends Object
 
 #use this to wait for any/all signals
 #it will then fire the completed signal with information
@@ -18,7 +18,8 @@ func _init(signals: Array, _mode: int=MODE.ANY) -> void:
 		s.connect(_on_signal.bind(s))
 
 
-func _on_signal(_signal: Signal, args:Array=[]) -> void:
+func _on_signal(...args:Array) -> void:
+	var _signal= args.pop_back()
 	_signals[_signal].has_emitted = true
 	var _args = [_signal.get_name()]
 	_args.append_array(args)

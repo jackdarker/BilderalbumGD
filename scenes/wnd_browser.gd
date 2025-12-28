@@ -16,8 +16,8 @@ func _ready() -> void:
 	%ImageList.list.get_parent().drop=drop_file
 	$WndMove.done.connect(switchPage.bind(0,true))
 	$WndMove.visible=false
+	$WndCreate.visible=false
 	Global.file_moved.connect(extRefresh)
-	
 	item_created.connect(updateList)
 	all_item_created.connect(%ImageList.updatePageCtrl)
 	buildTree()
@@ -36,10 +36,6 @@ func extRefresh(path:String):
 	if(actual_dir!=path.get_base_dir()):
 		return
 	switchPage(0,true)
-
-func navigateTo(path:String):
-	#expand the directory-tree to match path		#todo
-	pass
 
 	
 func saveData()->Dictionary:
@@ -61,11 +57,9 @@ func loadData(data: Dictionary):
 	size.x=data["w"]
 	size.y=data["h"]
 	UID=data["UID"]
-	navigateTo(data["actual_dir"])
-
-func _on_button_pressed() -> void:
-	%FileDialog.popup_centered_ratio()
-
+	if (data["actual_dir"]):
+		navigateTo.call_deferred(data["actual_dir"])
+		
 func _on_file_dialog_file_selected(path: String) -> void:
 	# Load an image of any format supported by Godot from the filesystem.
 	var image = Image.load_from_file(path)
@@ -73,7 +67,6 @@ func _on_file_dialog_file_selected(path: String) -> void:
 	var texture = ImageTexture.create_from_image(image)
 	#texture.set_size_override(Vector2(100,100))
 	%TextureRect.texture=texture
-
 
 func _displayImage(path)->void:	
 	selected.emit(path)
@@ -91,6 +84,35 @@ func _clearDirTree(item:TreeItem)->void:
 	else:
 		%Tree.clear()
 
+func navigateTo(path:String,force:bool=true):
+	#force==true: expand the directory-tree to match path		#todo
+	#force==false: if the path is unfolded, update the second-last dir to refresh new/delted subdirs
+	var _dirs=path.split("/")
+	var _item:TreeItem = %Tree.get_root()
+	var _subitems
+	for i in _dirs.size():
+		_subitems=_item.get_children()
+		for _subitem in _subitems:
+			if (_dirs[i]== _subitem.get_text(0)):
+				_item=_subitem	#dir already in tree, step deeper
+				if(force):
+					_appendDir(_item)
+					#_item.collapsed=false
+				else:
+					if(!_item.collapsed):
+						_appendDir(_item)
+						#_item.collapsed=false
+				break
+			else:
+				if(force && i==0):
+					#_item.set_collapsed_recursive(true)
+					pass
+	if(force):
+		_item.set_collapsed_recursive(false)
+	pass
+
+
+
 func buildTree() -> void:
 	_clearDirTree(null)
 	var tree=%Tree
@@ -98,7 +120,7 @@ func buildTree() -> void:
 	tree.hide_root = true
 	root.set_metadata(0,"")
 	var d=DirAccess.get_drive_count()
-	for i in d:
+	for i in d: #add drives to root
 		var drive:TreeItem=tree.create_item(root)
 		var letter=DirAccess.get_drive_name(i)
 		drive.set_text(0,letter)
@@ -106,37 +128,53 @@ func buildTree() -> void:
 		drive.collapsed=true
 
 	_appendDir(root)
+
+func _getNodeByText(parent:TreeItem,text:String)->TreeItem:
+	var _nodes=parent.get_children()
+	for _node in _nodes:
+		if(_node.get_text(0)==text):
+			return(_node)
+	return(null)
 	
 func _appendDir(item: TreeItem)->void:
 	if !is_inside_tree():
 		return
 	var tree=%Tree
 	var full_path:String=item.get_metadata(0)
-	if full_path=="":
+	if full_path=="":	
 		for drive in item.get_children():
 			_appendDir(drive)
 	else:
 		var dir = DirAccess.open(full_path)
 		if dir:
-			_clearDirTree(item)
+			#_clearDirTree(item)	#instead of recreating all nodes we try to reuse existing
+			var _itemsKeep=[]
 			dir.list_dir_begin()
 			var file_name = dir.get_next()
 			while file_name != "":
 				if dir.current_is_dir():
-					var node:TreeItem=tree.create_item(item)
-					node.set_text(0,file_name)
-					node.set_metadata(0,dir.get_current_dir().path_join(file_name))
-					tree.create_item(node)	#add a placeholder for digging deeper
-					node.collapsed=true
+					var node:TreeItem=_getNodeByText(item,file_name)
+					if(!node):
+						node=tree.create_item(item)
+						node.set_text(0,file_name)
+						node.set_metadata(0,dir.get_current_dir().path_join(file_name))
+						tree.create_item(node)	#add a placeholder for digging deeper
+						node.collapsed=true
+					elif node.get_children().size()<=0:
+						tree.create_item(node)	#if there isnt at least one childnode, the node would not be uncollapsable and appendDir would not be triggered
+						node.collapsed=true
+					_itemsKeep.push_back(file_name)
 				file_name = dir.get_next()
 			dir.list_dir_end()
+			for node in item.get_children():
+				if(!_itemsKeep.find(node.get_text(0))>=0):
+					node.free()
 		else:
 			print("An error occurred when trying to access the path.")
 
 func _on_tree_item_collapsed(item: TreeItem) -> void:
-	if item.collapsed:
-		return
-	call_deferred("_appendDir",item)	#if called directly tree.create_item(item) returns null?!
+	if !item.collapsed:
+		call_deferred("_appendDir",item)	#if called directly tree.create_item(item) returns null?!
 
 var actual_dir=null
 func _on_tree_item_selected() -> void:
@@ -207,9 +245,36 @@ func _on_close_requested() -> void:
 	hide()
 	call_deferred("free")
 
-func _on_button_4_pressed() -> void:
-	SaveLoadMgr.save("c://temp//savegame.save")
+func _on_bt_delete_dir_pressed() -> void:
+	if(actual_dir):
+		var myPromise:Promise
+		var _fcount=DirAccess.get_files_at(actual_dir).size()
+		var _dcount=DirAccess.get_directories_at(actual_dir).size()
+		var text = actual_dir+"\n"
+		text += str(_dcount)+" directorys\n" if _dcount>0 else ""		
+		text += str(_fcount)+" files\n" if _fcount>0 else ""
+		var dialog = ConfirmationDialog.new() 
+		dialog.title = "Delete directory?" 
+		dialog.dialog_text = text
+		myPromise=Promise.new([dialog.canceled,dialog.confirmed])
+		add_child(dialog)	
+		dialog.popup_centered() # center on screen
+		dialog.show()
+		var res = await myPromise.completed
+		if(res[0][0]==dialog.confirmed.get_name()):
+			var path=actual_dir
+			actual_dir=null
+			DirAccess.remove_absolute(path)
+		#myPromise.free()
 
-
-func _on_button_5_pressed() -> void:
-	SaveLoadMgr.load("c://temp//savegame.save")
+func _on_bt_create_dir_pressed() -> void:
+	if(actual_dir):
+		var myPromise:Promise
+		myPromise=Promise.new([$WndCreate.done,$WndCreate.cancled])
+		$WndCreate.from=actual_dir
+		$WndCreate.popup_centered() 
+		$WndCreate.show()
+		var res = await myPromise.completed
+		if(res[0][0]==$WndCreate.done.get_name()):
+			navigateTo(res[0][1])
+		#myPromise.free()

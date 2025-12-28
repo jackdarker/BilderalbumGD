@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c8qw0h1nshdir" path="res://scenes/ImageListItem.tscn" id="3_cq3pd"]
 [ext_resource type="PackedScene" uid="uid://bixyjfsb5c04t" path="res://scenes/wnd_settings.tscn" id="4_l78x7"]
 
-[node name="Viewer" type="Control" groups=["Persist"]]
+[node name="WndViewer" type="Control" groups=["Persist"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,7 +70,6 @@ one_shot = true
 unique_name_in_owner = true
 visible = false
 
-[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btNewBrowser" to="." method="_on_bt_new_browser_pressed"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btSettings" to="." method="_on_bt_settings_pressed"]
 [connection signal="resized" from="HBoxContainer/TextureRect" to="." method="_on_texture_rect_resized"]

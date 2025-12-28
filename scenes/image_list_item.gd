@@ -15,12 +15,12 @@ func _get_drag_data(at_position: Vector2) -> Variant:
 	set_drag_preview(cpb)
 	return $Label.text
 
-func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
-	if(false && data is String):
-		return true
-	return false
-	
-func _drop_data(at_position: Vector2, data: Variant) -> void:
-	if(data is String):
-		$Label.text = data
+#func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+#	if(false && data is String):
+#		return true
+#	return false
+#	
+#func _drop_data(at_position: Vector2, data: Variant) -> void:
+#	if(data is String):
+#		$Label.text = data
 #endregion

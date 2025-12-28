@@ -4,6 +4,12 @@ extends Control
 
 func _ready() -> void:
 	pass
+
+# see https://docs.godotengine.org/en/stable/tutorials/inputs/handling_quit_requests.html
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		Global.saveToFile()
+		get_tree().quit() # default behavior
 	
 var _actual_image=null	
 func displayImage(path)->void:	
@@ -24,6 +30,3 @@ func _on_texture_rect_resized() -> void:
 func _on_resize_timer_timeout() -> void:
 	if _actual_image:
 		displayImage(_actual_image)
-
-func _on_tree_exiting() -> void:
-	Global.onQuitting()

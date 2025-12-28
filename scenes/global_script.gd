@@ -33,6 +33,7 @@ func _deferred_goto_scene(path):
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var root = get_tree().root
+	get_tree().set_auto_accept_quit(false)	# see https://docs.godotengine.org/en/stable/tutorials/inputs/handling_quit_requests.html
 	# Using a negative index counts from the end, so this gets the last child node of `root`.
 	current_scene = root.get_child(-1)
 	loadFromFile()
@@ -40,12 +41,12 @@ func _ready() -> void:
 func quitGodot():
 	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	get_tree().quit()
-
-func onQuitting():
-	pass
 	
 func getGlobalViewer():
-	return get_tree().root.get_node("Viewer")
+	return get_tree().root.get_node("WndViewer")
+
+func getGlobalTagger():
+	return get_tree().root.get_node("Tagger")
 
 func createBrowser():
 	var s=SceneBrowser.instantiate()
@@ -144,8 +145,9 @@ func loadFromFile():
 	
 	loadData(json.data)
 	save_game.close()
-var myPromise
+
 func loadData(data):
+	var myPromise
 	Global.settings.loadData(data.settings)
 	if(data.browsers.size()>0):
 		var dialog = ConfirmationDialog.new() 
@@ -162,8 +164,8 @@ func loadData(data):
 			for item in data.browsers:
 				var s=createBrowser()
 				s.loadData(item)
-	pass
-	
+		#myPromise.free()
+		
 func saveData()->Variant:
 	var data ={
 		"settings":Global.settings.saveData(),
@@ -175,4 +177,4 @@ func saveData()->Variant:
 		
 	return(data)
 
-#region
+#endregion
