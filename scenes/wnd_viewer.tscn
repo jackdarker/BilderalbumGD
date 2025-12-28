@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cdgukpb1yb3s0"]
+[gd_scene load_steps=6 format=3 uid="uid://cdgukpb1yb3s0"]
 
 [ext_resource type="Script" uid="uid://bs83yv82qi3vu" path="res://scenes/wnd_viewer.gd" id="1_g6ech"]
 [ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="2_tc348"]
 [ext_resource type="PackedScene" uid="uid://c8qw0h1nshdir" path="res://scenes/ImageListItem.tscn" id="3_cq3pd"]
 [ext_resource type="PackedScene" uid="uid://bixyjfsb5c04t" path="res://scenes/wnd_settings.tscn" id="4_l78x7"]
+[ext_resource type="Script" uid="uid://ycyybdxo8eeh" path="res://scenes/database.gd" id="5_fv5lv"]
 
 [node name="WndViewer" type="Control" groups=["Persist"]]
 layout_mode = 3
@@ -69,6 +70,9 @@ one_shot = true
 [node name="WndSettings" parent="." instance=ExtResource("4_l78x7")]
 unique_name_in_owner = true
 visible = false
+
+[node name="db" type="Node" parent="."]
+script = ExtResource("5_fv5lv")
 
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btNewBrowser" to="." method="_on_bt_new_browser_pressed"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btSettings" to="." method="_on_bt_settings_pressed"]

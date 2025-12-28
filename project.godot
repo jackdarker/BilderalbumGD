@@ -30,7 +30,7 @@ window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/godot-sqlite/plugin.cfg")
 
 [global_group]
 
