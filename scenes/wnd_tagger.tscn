@@ -1,13 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://d032m8q60rla5"]
+[gd_scene load_steps=4 format=3 uid="uid://d032m8q60rla5"]
 
 [ext_resource type="Script" uid="uid://baitr633ii1sy" path="res://scenes/wnd_tagger.gd" id="1_o0v66"]
 [ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="2_vvc55"]
+[ext_resource type="PackedScene" uid="uid://cevdurwvkkp2r" path="res://scenes/Tag.tscn" id="3_vvc55"]
 
 [node name="WndTagger" type="Window"]
 oversampling_override = 1.0
 title = "Tagger"
-initial_position = 2
-size = Vector2i(400, 300)
+position = Vector2i(200, 100)
+size = Vector2i(400, 400)
 script = ExtResource("1_o0v66")
 
 [node name="Panel" type="Panel" parent="."]
@@ -32,7 +33,7 @@ theme_override_constants/margin_top = 30
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label3" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="lb_image" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Image"
 
@@ -54,27 +55,27 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VFlowContainer2" type="FlowContainer" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer"]
+[node name="tags_assigned" type="FlowContainer" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/VFlowContainer2"]
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
 layout_mode = 2
 text = "Tag 1"
 
-[node name="Label2" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/VFlowContainer2"]
+[node name="Label2" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
 layout_mode = 2
 text = "Tag 2"
 
-[node name="Label3" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/VFlowContainer2"]
+[node name="Label3" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
 layout_mode = 2
 text = "Tag 2"
 
-[node name="Label4" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/VFlowContainer2"]
+[node name="Label4" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
 layout_mode = 2
 text = "Tag 2"
 
-[node name="Label5" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/VFlowContainer2"]
+[node name="Label5" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
 layout_mode = 2
 text = "Tag 2"
 
@@ -83,29 +84,32 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VFlowContainer" type="FlowContainer" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2"]
+[node name="tags_unassigned" type="FlowContainer" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/VFlowContainer"]
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
 layout_mode = 2
 text = "Tag 1"
 
-[node name="Label2" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/VFlowContainer"]
+[node name="Label2" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
 layout_mode = 2
 text = "Tag 2"
 
-[node name="Label3" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/VFlowContainer"]
+[node name="Label3" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
 layout_mode = 2
 text = "Tag 2"
 
-[node name="Label4" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/VFlowContainer"]
+[node name="Label4" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
 layout_mode = 2
 text = "Tag 2"
 
-[node name="Label5" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/VFlowContainer"]
+[node name="Label5" type="Label" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
 layout_mode = 2
 text = "Tag 2"
+
+[node name="Tag" parent="Panel/MarginContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned" instance=ExtResource("3_vvc55")]
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -116,9 +120,10 @@ size_flags_vertical = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
-text = "OK"
+text = "Save"
 
 [node name="bt_cancle" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 size_flags_horizontal = 8

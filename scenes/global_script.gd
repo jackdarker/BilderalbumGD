@@ -2,6 +2,7 @@ extends Node
 
 signal file_moved(path:String)
 
+var db:TagDatabase =null
 var current_scene = null
 var settings:Settings =Settings.new()
 

@@ -1,8 +1,11 @@
 extends Control
 
-@onready var SceneListItem = load("res://scenes/ImageListItem.tscn")
-
 func _ready() -> void:
+	Global.db=$db
+	%ImageList.list.get_children().map(
+		func(x): 
+			x.get_parent().remove_child(x)
+			x.queue_free())
 	pass
 
 # see https://docs.godotengine.org/en/stable/tutorials/inputs/handling_quit_requests.html
@@ -12,9 +15,21 @@ func _notification(what):
 		get_tree().quit() # default behavior
 	
 var _actual_image=null	
-func displayImage(path)->void:	
-	%TextureRect.texture=Global.loadImgToTexture(path,%TextureRect.size.x,%TextureRect.size.y)
-	_actual_image=path	
+func displayImage(path)->void:
+	var _item=null
+	for item in %ImageList.list.get_children():
+		if(item.text==path):
+			_item=item
+	if(!_item):
+		var item=ListItem.create_item(path)
+		item.selected.connect(updateView)
+		%ImageList.list.add_child(item)
+	updateView(path)
+	
+func updateView(path):
+	_actual_image=path
+	%TextureRect.texture=Global.loadImgToTexture(_actual_image,%TextureRect.size.x,%TextureRect.size.y)
+	%WndTagger.displayImage(_actual_image)
 
 func _on_bt_new_browser_pressed() -> void:
 	Global.createBrowser()
@@ -29,4 +44,7 @@ func _on_texture_rect_resized() -> void:
 
 func _on_resize_timer_timeout() -> void:
 	if _actual_image:
-		displayImage(_actual_image)
+		updateView(_actual_image)
+
+func _on_bt_edit_tags_pressed() -> void:
+	%WndTagger.visible=!%WndTagger.visible

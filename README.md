@@ -5,12 +5,12 @@ See "Howto use" for a list of functions.
 Features:
 - To be able to use multiple monitors there is 1 main-window (the viewer) and multiple non-modal windows (browser).
 - list item generation with workerthread (generate image-icons)
-- Folder Tree
+- browser displays Folder Tree
 - dragndrop of items between browser to move files
+- create/delete directories in browser
 - saving/restore last session
 
 ToDo:
-- create/delete directories in browser
 - delete items in browser
 - sqlite-database for image tagging
 - search based on database

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cevdurwvkkp2r"]
+
+[ext_resource type="Script" uid="uid://dyii6lfxoqvwm" path="res://scenes/tag.gd" id="1_ge0xl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ge0xl"]
+
+[node name="Tag" type="Button"]
+custom_minimum_size = Vector2(100, 20)
+offset_right = 100.0
+offset_bottom = 31.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_ge0xl")
+text = "hdfgh"
+script = ExtResource("1_ge0xl")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

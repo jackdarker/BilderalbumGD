@@ -3,7 +3,7 @@ extends Window
 
 signal selected(path:String)
 
-@onready var SceneListItem = load("res://scenes/ImageListItem.tscn")
+@onready var SceneListItem = load("res://scenes/image_list_item.tscn")
 
 var UID:int
 # Called when the node enters the scene tree for the first time.
@@ -83,12 +83,12 @@ func _clearDirTree(item:TreeItem)->void:
 			n.free()
 	else:
 		%Tree.clear()
-
+var _item:TreeItem
 func navigateTo(path:String,force:bool=true):
-	#force==true: expand the directory-tree to match path		#todo
-	#force==false: if the path is unfolded, update the second-last dir to refresh new/delted subdirs
+	#force==true: expand the directory-tree to match path
+	#force==false: if the path is unfolded, update the second-last dir to refresh new/deleted subdirs
 	var _dirs=path.split("/")
-	var _item:TreeItem = %Tree.get_root()
+	_item = %Tree.get_root()
 	var _subitems
 	for i in _dirs.size():
 		_subitems=_item.get_children()
@@ -108,7 +108,9 @@ func navigateTo(path:String,force:bool=true):
 					#_item.set_collapsed_recursive(true)
 					pass
 	if(force):
-		_item.set_collapsed_recursive(false)
+		var t=_item.get_text(0)
+		_item.uncollapse_tree()
+		_item.get_tree().set_selected(_item,0)
 	pass
 
 
@@ -176,7 +178,7 @@ func _on_tree_item_collapsed(item: TreeItem) -> void:
 	if !item.collapsed:
 		call_deferred("_appendDir",item)	#if called directly tree.create_item(item) returns null?!
 
-var actual_dir=null
+var actual_dir:String
 func _on_tree_item_selected() -> void:
 	actual_dir=%Tree.get_selected().get_metadata(0)
 	$".".title="Browser "+actual_dir
@@ -212,24 +214,7 @@ func fetchImagesByThread(dir_path,page):
 		print("An error occurred when trying to access the path.")
 
 func _create_item(path)-> Object:
-	var _Item=SceneListItem.instantiate()
-	var image = Image.load_from_file(path)
-	var ThumbnailSize = Global.settings.Itemsize
-	var Width =0
-	var Height = 0
-	var Ratio = image.get_width() / float(image.get_height())
-	if Ratio>= 1.0:
-		Width = ThumbnailSize;
-		Height = (Width * image.get_height()) / float(image.get_width());
-	else:
-		Height = ThumbnailSize;
-		Width = (Height * image.get_width()) / float(image.get_height());
-
-	image.resize(Width,Height)
-	var texture = ImageTexture.create_from_image(image)
-	_Item.get_node("TextureRect").texture=texture
-	_Item.get_node("Label").text=path
-	return _Item
+	return ListItem.create_item(path)
 
 func updateList(item):
 	item.selected.connect(_displayImage)
@@ -263,8 +248,10 @@ func _on_bt_delete_dir_pressed() -> void:
 		var res = await myPromise.completed
 		if(res[0][0]==dialog.confirmed.get_name()):
 			var path=actual_dir
-			actual_dir=null
-			DirAccess.remove_absolute(path)
+			actual_dir=actual_dir.get_base_dir()
+			#DirAccess.remove_absolute(path)  only deletes empty dirs
+			OS.move_to_trash(ProjectSettings.globalize_path(path))
+			navigateTo(actual_dir,true)
 		#myPromise.free()
 
 func _on_bt_create_dir_pressed() -> void:

@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://c8qw0h1nshdir"]
+
+[ext_resource type="Texture2D" uid="uid://bxwkvso2ow0n8" path="res://icon.svg" id="1_67525"]
+[ext_resource type="Script" uid="uid://x3u42kg8j1kk" path="res://scenes/image_list_item.gd" id="1_vn0ym"]
+
+[node name="ImageListItem" type="Control"]
+custom_minimum_size = Vector2(220, 220)
+layout_mode = 3
+anchors_preset = 0
+focus_mode = 2
+script = ExtResource("1_vn0ym")
+
+[node name="Focus" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("1_67525")
+
+[node name="Label" type="Label" parent="Control"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+text = "My ImageMy ImageMy ImageMy Image"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
+[connection signal="focus_exited" from="." to="." method="_on_focus_exited"]
+[connection signal="gui_input" from="Control/TextureRect" to="." method="_on_texture_rect_gui_input"]
