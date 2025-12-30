@@ -1,11 +1,10 @@
 class_name TagDatabase extends Node
 
 var db : SQLite = null
-var db_name = "res://data/test"
+var db_name = "res://data/database"
 const verbosity_level : int = SQLite.QUIET #SQLite.VERBOSE
 
 #Note: items (capitals) returned by SELECT depend how the tables were initial defined, not on the query itself
-
 
 func _ready():
 	dbinit()
@@ -72,13 +71,13 @@ func _test1():
 	createTagGroup({"name":"gray","color":"gray","fgcolor":"white","shape":""});
 	results = findTagGroups()
 	
-	tagid=createTag({"name":"new","groupid":1})
-	createTag({"name":"old","groupid":2})
+	tagid=createTag({"name":"new","groupID":1})
+	createTag({"name":"old","groupID":2})
 	
-	postid=createPost({"filename":"c:/temp/new","name":"new file"})
-	assignTagToPost(postid,[tagid])
-	results=findPost("c:/temp/new")
-	results=findPostByTag("new")
+	#postid=createPost({"filename":"c:/temp/new","name":"new file"})
+	#assignTagToPost(postid,[tagid])
+	#results=findPost("c:/temp/new")
+	#results=findPostByTag("new")
 	results=getTagStatistic()
 	pass
 	
@@ -98,42 +97,47 @@ func createTagGroup(group:Dictionary)->int:
 		rowID = db.last_insert_rowid
 	return(rowID)
 
+#TODO	func deleteTagGroup():
+#	delete group&Tags&Posttags?
+
 func findTagGroups()->Array:
 	var results : Array = db.select_rows("TagGroups", "", ["id","name","color","fgcolor","shape"])
 	return(results);
 
 func createTag(tag)->int:
-	if(!tag.has("groupid")):
-		tag["groupid"] = 1
+	if(!tag.has("groupID")):
+		tag["groupID"] = 1
 	if(!tag.has("newname")):
 		tag["newname"] = tag.name
 	var query
 	var rowID=-1
 	var selected_array : Array = db.select_rows("Tags", "name='"+tag.name+"'", ["ID"])
 	if(selected_array.size()>0):
-		query= "Update Tags SET name='"+tag.newname+"', groupID="+str(tag.groupid)+" where (name='"+tag.name+"')"
+		query= "Update Tags SET name='"+tag.newname+"', groupID="+str(tag.groupID)+" where (name='"+tag.name+"')"
 		db.query(query)
 		rowID=selected_array[0]["ID"]
 	else:
-		query="Insert Into Tags (name,GroupID) VALUES('"+tag.newname+"',"+str(tag.groupid)+")"
+		query="Insert Into Tags (name,GroupID) VALUES('"+tag.newname+"',"+str(tag.groupID)+")"
 		db.query(query)
 		rowID = db.last_insert_rowid
 	return(rowID);
-	
+
+
 func deleteTag(tag):
 	#todo only delete if no one uses it, maybe mark for deletion and hide ?
+	db.query("Delete from PostTags where (tagID='"+tag.ID+"')")
 	db.query("Delete from Tags where (name='"+tag.name+"')")
 
 func findTags(exclude:Array[int])->Array:
 	var _exclude:String=",".join(exclude.map(func(x):return(str(x))))
-	var query = "SELECT Tags.id,Tags.name, TagGroups.ID as groupid, TagGroups.color, TagGroups.fgcolor, TagGroups.shape 
+	var query = "SELECT Tags.id,Tags.name, TagGroups.ID as groupID, TagGroups.color, TagGroups.fgcolor, TagGroups.shape 
 		FROM Tags left join TagGroups on Tags.GroupID=TagGroups.ID
 		WHERE Tags.ID NOT IN("+_exclude+")"
 	db.query(query)
 	return(db.query_result)
 	
 func findPostTags(postId)->Array:
-	var query = "SELECT Tags.id,Tags.name, TagGroups.ID as groupid, TagGroups.color, TagGroups.fgcolor, TagGroups.shape FROM Tags 
+	var query = "SELECT Tags.id,Tags.name, TagGroups.ID as groupID, TagGroups.color, TagGroups.fgcolor, TagGroups.shape FROM Tags 
 			inner join PostTags on Tags.ID=PostTags.tagId 
 			left join TagGroups on Tags.GroupID=TagGroups.ID 
 			WHERE PostTags.postID="+str(postId)
@@ -151,13 +155,13 @@ func createPost(post)->int:
 		db.query(query)
 		rowID=selected_array[0]["postID"]
 	else:
-		query= "Insert Into Posts (boardID,posterId,fileName,name) VALUES("+str(post.boardID)+",'"+str(post.posterID)+"','"+post.filename+"','"+post.name+"')"
+		query= "Insert Into Posts (boardID,posterID,fileName,name) VALUES("+str(post.boardID)+",'"+str(post.posterID)+"','"+post.filename+"','"+post.name+"')"
 		db.query(query)
 		rowID = db.last_insert_rowid
 	return(rowID)
 	
 func getPost(postID)->Array:
-	var results : Array = db.select_rows("Posts", "postID="+str(postID), ["boardid","postid","name","filename"])
+	var results : Array = db.select_rows("Posts", "postID="+str(postID), ["boardID","postID","name","fileName"])
 	return results
 
 func assignTagToPost(postid:int,tagids:Array[int]):
@@ -171,12 +175,51 @@ func assignTagToPost(postid:int,tagids:Array[int]):
 
 #relative path+name
 func findPost(search)->Array:
-	var results : Array = db.select_rows("Posts", "fileName='"+str(search)+"'", ["boardid","postid","name","filename"])
+	var results : Array = db.select_rows("Posts", "fileName='"+str(search)+"'", ["boardID","postID","name","fileName"])
 	return results
 
 #search doesnt support wildcards !
-func findPostByTag(search)->Array:
-	var query ="select distinct Posts.postid from Posts inner join PostTags on Posts.postID=PostTags.postID inner join Tags on Tags.ID=PostTags.tagID where Tags.name IN('"+search+"')"
+func findPostByTag(withTags:Array[String],withoutTags:Array[String])->Array:
+	if(withTags.size()<=0):
+		return []
+	var	_in="'" + "','".join(withTags) + "'"	#  'green','red'
+	var	_out="'" + "','".join(withoutTags) + "'"
+	var query
+	#select distinct Posts.postid,Posts.fileName from Posts 
+		#inner join PostTags on Posts.postID=PostTags.postID 
+		#inner join Tags on Tags.ID=PostTags.tagID
+		#inner join ( 
+			#select PostTags.postid  from PostTags
+			#inner join Tags on Tags.ID=PostTags.tagID
+			#where  Tags.name IN('old','new')
+			#group by PostTags.postid
+			#having count(*)=2
+			#EXCEPT
+			#select PostTags.postid  from PostTags
+			#inner join Tags on Tags.ID=PostTags.tagID
+			#where  Tags.name IN('new2')
+			#group by PostTags.postid
+			#having count(*)=1
+		#) as t1 on Posts.postid=t1.postid
+		
+	query ="select distinct Posts.postid,Posts.fileName from Posts 
+		inner join PostTags on Posts.postID=PostTags.postID 
+		inner join Tags on Tags.ID=PostTags.tagID 
+		inner join ( "
+	if(withTags.size()>0):
+		query+= "select PostTags.postid from PostTags
+		inner join Tags on Tags.ID=PostTags.tagID
+		where Tags.name IN("+_in+")
+		group by PostTags.postid
+		having count(*)="+str(withTags.size())
+	if(withoutTags.size()>0):
+		query+=" EXCEPT
+			select PostTags.postid from PostTags
+		inner join Tags on Tags.ID=PostTags.tagID
+		where Tags.name IN("+_out+")
+		group by PostTags.postid
+		having count(*)="+str(withoutTags.size())
+	query+=") as t1 on Posts.postid=t1.postid"
 	db.query(query)
 	return(db.query_result)
 

@@ -1,0 +1,173 @@
+[gd_scene load_steps=5 format=3 uid="uid://0o5kfe34g757"]
+
+[ext_resource type="Script" uid="uid://b14anpygtoowg" path="res://scenes/wnd_finder.gd" id="1_ircxy"]
+[ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="2_ircxy"]
+[ext_resource type="PackedScene" uid="uid://cevdurwvkkp2r" path="res://scenes/Tag.tscn" id="3_em0yf"]
+[ext_resource type="PackedScene" uid="uid://dhjm5iedpepfd" path="res://scenes/image_list.tscn" id="4_em0yf"]
+
+[node name="WndFinder" type="Window"]
+oversampling_override = 1.0
+title = "Finder"
+position = Vector2i(200, 36)
+size = Vector2i(600, 600)
+script = ExtResource("1_ircxy")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_ircxy")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="GridContainer" type="GridContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Assigned Tags"
+
+[node name="Label2" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Unassigned Tags"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="tags_assigned" type="FlowContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
+layout_mode = 2
+text = "Tag 1"
+
+[node name="Label2" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label3" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label4" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label5" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer/tags_assigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="tags_unassigned" type="FlowContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer2"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
+layout_mode = 2
+text = "Tag 1"
+
+[node name="Label2" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label3" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label4" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label5" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Tag" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer2/tags_unassigned" instance=ExtResource("3_em0yf")]
+layout_mode = 2
+
+[node name="ScrollContainer3" type="ScrollContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="tags_all" type="FlowContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer3"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer3/tags_all"]
+layout_mode = 2
+text = "Tag 1"
+
+[node name="Label2" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer3/tags_all"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label3" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer3/tags_all"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label4" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer3/tags_all"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Label5" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer3/tags_all"]
+layout_mode = 2
+text = "Tag 2"
+
+[node name="Tag" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ScrollContainer3/tags_all" instance=ExtResource("3_em0yf")]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="bt_search" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+text = "Search"
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/VBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "Click on the tags in left box to add them to the filter.
+Filter by:
+All of the Assigned and non of the Unassigned present"
+autowrap_mode = 3
+
+[node name="ImageList" parent="Panel/MarginContainer/HBoxContainer" instance=ExtResource("4_em0yf")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/GridContainer/VBoxContainer/bt_search" to="." method="_on_bt_search_pressed"]

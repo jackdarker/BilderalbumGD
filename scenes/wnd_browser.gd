@@ -114,7 +114,6 @@ func navigateTo(path:String,force:bool=true):
 	pass
 
 
-
 func buildTree() -> void:
 	_clearDirTree(null)
 	var tree=%Tree

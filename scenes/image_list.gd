@@ -5,6 +5,10 @@ extends Control
 @onready var bt_next=$VBoxContainer/HBoxContainer/bt_next
 @onready var bt_page=$VBoxContainer/HBoxContainer/OptionButton
 
+var page:int:
+	get():
+		return bt_page.selected
+
 func updatePageCtrl(page,pages):
 	bt_page.clear()
 	for i in pages:

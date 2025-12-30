@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cdgukpb1yb3s0"]
+[gd_scene load_steps=7 format=3 uid="uid://cdgukpb1yb3s0"]
 
 [ext_resource type="Script" uid="uid://bs83yv82qi3vu" path="res://scenes/wnd_viewer.gd" id="1_g6ech"]
 [ext_resource type="PackedScene" uid="uid://dhjm5iedpepfd" path="res://scenes/image_list.tscn" id="2_fv5lv"]
 [ext_resource type="PackedScene" uid="uid://bixyjfsb5c04t" path="res://scenes/wnd_settings.tscn" id="4_l78x7"]
+[ext_resource type="PackedScene" uid="uid://crun6fa4m2ctc" path="res://scenes/wnd_create_tag.tscn" id="5_ei5s7"]
 [ext_resource type="Script" uid="uid://ycyybdxo8eeh" path="res://scenes/database.gd" id="5_fv5lv"]
 [ext_resource type="PackedScene" uid="uid://d032m8q60rla5" path="res://scenes/wnd_tagger.tscn" id="6_ei5s7"]
 
@@ -33,11 +34,19 @@ layout_mode = 2
 
 [node name="btNewBrowser" type="Button" parent="HBoxContainer/Container/VBoxContainer"]
 layout_mode = 2
-text = "New Browser"
+text = "new Browser"
+
+[node name="bt_new_finder" type="Button" parent="HBoxContainer/Container/VBoxContainer"]
+layout_mode = 2
+text = "new Finder"
 
 [node name="bt_edit_tags" type="Button" parent="HBoxContainer/Container/VBoxContainer"]
 layout_mode = 2
-text = "tags..."
+text = "Tagger..."
+
+[node name="bt_edit_tags2" type="Button" parent="HBoxContainer/Container/VBoxContainer"]
+layout_mode = 2
+text = "Create Tags..."
 
 [node name="btSettings" type="Button" parent="HBoxContainer/Container/VBoxContainer"]
 layout_mode = 2
@@ -66,11 +75,18 @@ visible = false
 [node name="db" type="Node" parent="."]
 script = ExtResource("5_fv5lv")
 
+[node name="WndCreateTag" parent="." instance=ExtResource("5_ei5s7")]
+unique_name_in_owner = true
+visible = false
+
 [node name="WndTagger" parent="." instance=ExtResource("6_ei5s7")]
 unique_name_in_owner = true
+visible = false
 
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btNewBrowser" to="." method="_on_bt_new_browser_pressed"]
+[connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/bt_new_finder" to="." method="_on_bt_new_finder_pressed"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/bt_edit_tags" to="." method="_on_bt_edit_tags_pressed"]
+[connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/bt_edit_tags2" to="." method="_on_bt_edit_tags_2_pressed"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btSettings" to="." method="_on_bt_settings_pressed"]
 [connection signal="resized" from="HBoxContainer/TextureRect" to="." method="_on_texture_rect_resized"]
 [connection signal="timeout" from="HBoxContainer/TextureRect/ResizeTimer" to="." method="_on_resize_timer_timeout"]

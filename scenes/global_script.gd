@@ -7,6 +7,7 @@ var current_scene = null
 var settings:Settings =Settings.new()
 
 var SceneBrowser = preload("res://scenes/wnd_browser.tscn")
+var SceneFinder = preload("res://scenes/wnd_finder.tscn")
 
 func goto_scene(path):
 	# This function will usually be called from a signal callback,
@@ -51,6 +52,12 @@ func getGlobalTagger():
 
 func createBrowser():
 	var s=SceneBrowser.instantiate()
+	s.selected.connect(getGlobalViewer().displayImage)
+	self.get_tree().root.add_child.call_deferred(s)
+	return s
+
+func createFinder():
+	var s=SceneFinder.instantiate()
 	s.selected.connect(getGlobalViewer().displayImage)
 	self.get_tree().root.add_child.call_deferred(s)
 	return s

@@ -26,12 +26,12 @@ func _loadTags(postID):
 	var _tagids:Array[int]=[]
 	for item in results:
 		_tagids.push_back(item["ID"])
-		var tag = Tag.create_tag(item["ID"],item["name"],item["fgColor"],item["color"])
+		var tag = Tag.create_tag(item["ID"],item["groupID"],item["name"],item["fgColor"],item["color"])
 		tags_assigned.add_child(tag)
 
 	results=Global.db.findTags(_tagids)
 	for item in results:
-		var tag = Tag.create_tag(item["ID"],item["name"],item["fgColor"],item["color"])
+		var tag = Tag.create_tag(item["ID"],item["groupID"],item["name"],item["fgColor"],item["color"])
 		tag.pressed.connect(toggleTag.bind(tag))
 		tags_unassigned.add_child(tag)
 
@@ -63,3 +63,7 @@ func _on_bt_ok_pressed() -> void:
 
 func _on_bt_cancle_pressed() -> void:
 	displayImage(_actual_image)
+
+
+func _on_close_requested() -> void:
+	self.visible=false

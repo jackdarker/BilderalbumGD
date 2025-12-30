@@ -48,3 +48,11 @@ func _on_resize_timer_timeout() -> void:
 
 func _on_bt_edit_tags_pressed() -> void:
 	%WndTagger.visible=!%WndTagger.visible
+
+
+func _on_bt_edit_tags_2_pressed() -> void:
+	%WndCreateTag.visible=!%WndCreateTag.visible
+
+
+func _on_bt_new_finder_pressed() -> void:
+	Global.createFinder()

@@ -9,24 +9,31 @@ Features:
 - dragndrop of items between browser to move files
 - create/delete directories in browser
 - saving/restore last session
+- sqlite-database for image tagging
+- search-by-tag based on database
 
 ToDo:
 - delete items in browser
-- sqlite-database for image tagging
-- search based on database
 - image tagging by AI?
 
 ## Howto use
+
 ### Viewer
 When you run the app the viewer is shown.  
 Press "new browser" to open a browser window.  
 
 ### Browser
-The browser lets you navigate directories similiar to windows explorer. It displays a list off the images found.    
+The browser lets you navigate directories similiar to windows explorer. It displays a list off the images found.
+You can have multiple browsers and dragndrop images to move them between directories
 Click on a list item to display the image in the viewer.  
 
 ### Tagger
-This window is for creating and assigning tags to the images.  
+This window is for assigning tags to the displayed images.  
+The information is saved in a database.  
+
+### TagCreator
+This window is for creating taggroups and tags.
+Taggroup define the colors of a tag while the tag itself just contains some text.
 The information is saved in a database.  
 
 ### Finder
