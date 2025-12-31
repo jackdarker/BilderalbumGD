@@ -1,7 +1,7 @@
 class_name TagDatabase extends Node
 
 var db : SQLite = null
-var db_name = "res://data/database"
+var db_name = "res://data/database"		#TODO res: is read only in release build !
 const verbosity_level : int = SQLite.QUIET #SQLite.VERBOSE
 
 #Note: items (capitals) returned by SELECT depend how the tables were initial defined, not on the query itself

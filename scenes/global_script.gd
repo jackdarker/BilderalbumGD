@@ -38,6 +38,7 @@ func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)	# see https://docs.godotengine.org/en/stable/tutorials/inputs/handling_quit_requests.html
 	# Using a negative index counts from the end, so this gets the last child node of `root`.
 	current_scene = root.get_child(-1)
+	DirAccess.make_dir_recursive_absolute("res://data")
 	loadFromFile()
 
 func quitGodot():

@@ -220,7 +220,7 @@ func updateList(item):
 	%ImageList.list.add_child(item)
 
 func switchPage(increment,relative):
-	var page=%ImageList.bt_page.selected
+	var page=max(0, %ImageList.bt_page.selected)
 	if(relative):
 		page+=increment
 	_fetchImagesThreaded(actual_dir,page)

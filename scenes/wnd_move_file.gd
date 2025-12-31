@@ -13,7 +13,7 @@ var filename:String
 func _on_visibility_changed() -> void:
 	if self.visible:
 		_from.text=from.get_base_dir()
-		_to.text=to.get_base_dir()
+		_to.text=to  #.get_base_dir()
 		filename=from.get_file()
 		_edit.text=filename
 		validator()

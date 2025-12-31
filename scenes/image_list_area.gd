@@ -1,7 +1,9 @@
-extends ScrollContainer
+extends Container
 
 var can_drop:Callable
 var drop:Callable
+
+#note this is bound to scrollbox not the contained boxcontainer because the boxc. doesnt receive drop-requests?
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	#if(data is String):

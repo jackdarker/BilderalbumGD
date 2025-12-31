@@ -49,14 +49,15 @@ func _get_drag_data(at_position: Vector2) -> Variant:
 	set_drag_preview(cpb)
 	return self.text
 
-#func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
-#	if(false && data is String):
-#		return true
-#	return false
-#	
-#func _drop_data(at_position: Vector2, data: Variant) -> void:
-#	if(data is String):
-#		$Label.text = data
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+	if(data is String):
+		return true
+	return false
+	
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	self.get_parent().get_parent()._drop_data(at_position,data)
+	#if(data is String):
+		#$Label.text = data
 #endregion
 
 
