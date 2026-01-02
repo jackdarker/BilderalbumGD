@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cdgukpb1yb3s0"]
+[gd_scene load_steps=8 format=3 uid="uid://cdgukpb1yb3s0"]
 
 [ext_resource type="Script" uid="uid://bs83yv82qi3vu" path="res://scenes/wnd_viewer.gd" id="1_g6ech"]
 [ext_resource type="PackedScene" uid="uid://dhjm5iedpepfd" path="res://scenes/image_list.tscn" id="2_fv5lv"]
+[ext_resource type="Theme" uid="uid://dyoqwqakkfsn2" path="res://scenes/style_menu.tres" id="2_ntqca"]
 [ext_resource type="PackedScene" uid="uid://bixyjfsb5c04t" path="res://scenes/wnd_settings.tscn" id="4_l78x7"]
 [ext_resource type="PackedScene" uid="uid://crun6fa4m2ctc" path="res://scenes/wnd_create_tag.tscn" id="5_ei5s7"]
 [ext_resource type="Script" uid="uid://ycyybdxo8eeh" path="res://scenes/database.gd" id="5_fv5lv"]
@@ -53,18 +54,24 @@ layout_mode = 2
 text = "Settings...
 "
 
-[node name="ImageList" parent="HBoxContainer" instance=ExtResource("2_fv5lv")]
+[node name="HSplitContainer" type="HSplitContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_ntqca")
+split_offset = 200
+
+[node name="ImageList" parent="HBoxContainer/HSplitContainer" instance=ExtResource("2_fv5lv")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/HSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 expand_mode = 1
 stretch_mode = 3
 
-[node name="ResizeTimer" type="Timer" parent="HBoxContainer/TextureRect"]
+[node name="ResizeTimer" type="Timer" parent="HBoxContainer/HSplitContainer/TextureRect"]
 wait_time = 0.25
 one_shot = true
 
@@ -88,5 +95,5 @@ visible = false
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/bt_edit_tags" to="." method="_on_bt_edit_tags_pressed"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/bt_edit_tags2" to="." method="_on_bt_edit_tags_2_pressed"]
 [connection signal="pressed" from="HBoxContainer/Container/VBoxContainer/btSettings" to="." method="_on_bt_settings_pressed"]
-[connection signal="resized" from="HBoxContainer/TextureRect" to="." method="_on_texture_rect_resized"]
-[connection signal="timeout" from="HBoxContainer/TextureRect/ResizeTimer" to="." method="_on_resize_timer_timeout"]
+[connection signal="resized" from="HBoxContainer/HSplitContainer/TextureRect" to="." method="_on_texture_rect_resized"]
+[connection signal="timeout" from="HBoxContainer/HSplitContainer/TextureRect/ResizeTimer" to="." method="_on_resize_timer_timeout"]

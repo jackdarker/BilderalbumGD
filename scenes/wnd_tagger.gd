@@ -14,6 +14,9 @@ func displayImage(path)->void:
 	_postID=-1
 	if(results.size()>=1):
 		_postID=results[0]["postID"]
+		%cnt_rating.value=results[0]["favRating"]
+	else:
+		%cnt_rating.value=0
 	_loadTags(_postID)
 	filename.text=_actual_image.get_file() + "    " + str(_postID)
 
@@ -27,6 +30,7 @@ func _loadTags(postID):
 	for item in results:
 		_tagids.push_back(item["ID"])
 		var tag = Tag.create_tag(item["ID"],item["groupID"],item["name"],item["fgColor"],item["color"])
+		tag.pressed.connect(toggleTag.bind(tag))
 		tags_assigned.add_child(tag)
 
 	results=Global.db.findTags(_tagids)
@@ -34,6 +38,10 @@ func _loadTags(postID):
 		var tag = Tag.create_tag(item["ID"],item["groupID"],item["name"],item["fgColor"],item["color"])
 		tag.pressed.connect(toggleTag.bind(tag))
 		tags_unassigned.add_child(tag)
+
+func _on_cnt_rating_value_changed(value: float) -> void:
+	%bt_ok.disabled=false
+	%bt_cancle.disabled=false
 
 func toggleTag(item):
 	%bt_ok.disabled=false
@@ -55,8 +63,9 @@ func _on_bt_ok_pressed() -> void:
 	for item in tags_assigned.get_children():
 		if(item.ID>0):
 			_tagids.push_back(item.ID)
-	if(_postID<=0):
-		_postID=Global.db.createPost({"filename":_actual_image,"name":_actual_image.get_file()})
+	
+	_postID=Global.db.createPost({"filename":_actual_image,"name":_actual_image.get_file(),
+			"favRating":%cnt_rating.value})
 	Global.db.assignTagToPost(_postID,_tagids)
 	displayImage(_actual_image)
 

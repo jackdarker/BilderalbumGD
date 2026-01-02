@@ -47,7 +47,7 @@ func saveData()->Dictionary:
 		"y":position.y,
 		"w":size.x,
 		"h":size.y,
-		"actual_dir":actual_dir
+		"actual_dir":actual_dir,
 	}
 	return data
 

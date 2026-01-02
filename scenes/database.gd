@@ -27,7 +27,7 @@ func dbinit():
 		postText TEXT,
 		fileName TEXT,
 		posterID TEXT NOT NULL,
-		fileExt TEXT
+		favRating INTEGER DEFAULT 0
 		)"
 	db.query(query)
 	query = "CREATE TABLE IF NOT EXISTS Boards (
@@ -55,12 +55,11 @@ func dbinit():
 		shape	TEXT			
 		)"
 	db.query(query)
-	query="SELECT COUNT(*) AS CNTREC FROM pragma_table_info('TagGroups') WHERE name='fgColor'"
+	# updating tables to new versions
+	query="SELECT COUNT(*) AS CNTREC FROM pragma_table_info('Posts') WHERE name='favRating'"
 	db.query(query)
 	if (db.query_result[0]["CNTREC"]<=0):
-		query = "ALTER TABLE TagGroups ADD fgColor TEXT"
-		db.query(query)
-		query = "ALTER TABLE TagGroups ADD shape TEXT"
+		query = "ALTER TABLE Posts ADD favRating INTEGER DEFAULT 0"
 		db.query(query)
 
 func _test1():
@@ -147,21 +146,23 @@ func findPostTags(postId)->Array:
 func createPost(post)->int:
 	post["posterID"]="unknown"		#todo
 	post["boardID"]=0
+	if !post["favRating"]:
+		post["favRating"]=0
 	var rowID=-1;
 	var selected_array : Array = db.select_rows("Posts", "name='"+post.name+"'", ["postID"])
 	var query
 	if(selected_array.size()>0):
-		query= "Update Posts Set boardId="+str(post.boardID)+",posterID='"+str(post.posterID)+"', fileName='"+post.filename+"', name='"+post.name+"' where (name='"+post.name+"')"
+		query= "Update Posts Set boardId="+str(post.boardID)+",posterID='"+str(post.posterID)+"', fileName='"+post.filename+"', name='"+post.name+"',favRating="+str(post.favRating)+" where (name='"+post.name+"')"
 		db.query(query)
 		rowID=selected_array[0]["postID"]
 	else:
-		query= "Insert Into Posts (boardID,posterID,fileName,name) VALUES("+str(post.boardID)+",'"+str(post.posterID)+"','"+post.filename+"','"+post.name+"')"
+		query= "Insert Into Posts (boardID,posterID,fileName,name,favRating) VALUES("+str(post.boardID)+",'"+str(post.posterID)+"','"+post.filename+"','"+post.name+"',"+str(post.favRating)+")"
 		db.query(query)
 		rowID = db.last_insert_rowid
 	return(rowID)
 	
 func getPost(postID)->Array:
-	var results : Array = db.select_rows("Posts", "postID="+str(postID), ["boardID","postID","name","fileName"])
+	var results : Array = db.select_rows("Posts", "postID="+str(postID), ["boardID","postID","name","fileName","favRating"])
 	return results
 
 func assignTagToPost(postid:int,tagids:Array[int]):
@@ -175,7 +176,7 @@ func assignTagToPost(postid:int,tagids:Array[int]):
 
 #relative path+name
 func findPost(search)->Array:
-	var results : Array = db.select_rows("Posts", "fileName='"+str(search)+"'", ["boardID","postID","name","fileName"])
+	var results : Array = db.select_rows("Posts", "fileName='"+str(search)+"'", ["boardID","postID","name","fileName","favRating"])
 	return results
 
 #search doesnt support wildcards !

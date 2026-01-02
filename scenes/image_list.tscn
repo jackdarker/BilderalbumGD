@@ -16,7 +16,7 @@ custom_minimum_size = Vector2(200, 100)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 302.0
-offset_bottom = 426.0
+offset_bottom = 476.0
 theme = ExtResource("1_65jmy")
 script = ExtResource("2_saagr")
 
@@ -48,6 +48,11 @@ popup/item_0/id = 0
 layout_mode = 2
 text = ">"
 
+[node name="bt_fulltext" type="CheckBox" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "fulltext"
+
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -56,6 +61,7 @@ script = ExtResource("3_saagr")
 [node name="BoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="ImageListItem" parent="VBoxContainer/ScrollContainer/BoxContainer" instance=ExtResource("2_u4a67")]
 layout_mode = 2
@@ -63,3 +69,5 @@ theme = SubResource("Theme_hq2gc")
 
 [node name="ImageListItem2" parent="VBoxContainer/ScrollContainer/BoxContainer" instance=ExtResource("2_u4a67")]
 layout_mode = 2
+
+[connection signal="toggled" from="VBoxContainer/HBoxContainer/bt_fulltext" to="." method="_on_bt_fulltext_toggled"]

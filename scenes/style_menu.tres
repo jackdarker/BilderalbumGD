@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://dyoqwqakkfsn2"]
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://dyoqwqakkfsn2"]
 
 [ext_resource type="FontFile" uid="uid://ch2qmpdjqls18" path="res://assets/fonts/Xolonium-Regular-dc1d20fa.ttf" id="1_6lp7o"]
 
@@ -71,6 +71,9 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6n7vo"]
+bg_color = Color(0.3403393, 0.34033936, 0.34033918, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fq5p7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7oxlo"]
@@ -107,6 +110,7 @@ Button/styles/focus = SubResource("StyleBoxFlat_kd2re")
 Button/styles/hover = SubResource("StyleBoxFlat_o1bco")
 Button/styles/normal = SubResource("StyleBoxFlat_8yhvv")
 Button/styles/pressed = SubResource("StyleBoxFlat_32e6p")
+HSplitContainer/styles/split_bar_background = SubResource("StyleBoxFlat_6n7vo")
 Label/colors/font_color = Color(1, 1, 1, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0)

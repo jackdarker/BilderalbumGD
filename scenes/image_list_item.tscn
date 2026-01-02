@@ -4,9 +4,10 @@
 [ext_resource type="Script" uid="uid://x3u42kg8j1kk" path="res://scenes/image_list_item.gd" id="1_vn0ym"]
 
 [node name="ImageListItem" type="Control"]
-custom_minimum_size = Vector2(220, 220)
+custom_minimum_size = Vector2(120, 180)
 layout_mode = 3
 anchors_preset = 0
+offset_right = 0.2000122
 focus_mode = 2
 script = ExtResource("1_vn0ym")
 
@@ -36,7 +37,7 @@ texture = ExtResource("1_67525")
 [node name="Label" type="Label" parent="Control"]
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
-text = "My ImageMy ImageMy ImageMy Image"
+text = "My ImageMy ImageMy "
 horizontal_alignment = 1
 autowrap_mode = 3
 

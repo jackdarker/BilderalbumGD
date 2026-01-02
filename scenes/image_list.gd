@@ -17,4 +17,18 @@ func updatePageCtrl(page,pages):
 	bt_page.selected=page
 	bt_prev.disabled= (page<=0)
 	bt_next.disabled= (page>=(pages-1))
+
 		
+var show_fulltext:bool=false:
+	set(value):
+		show_fulltext=value
+		%bt_fulltext.button_pressed=show_fulltext
+		for item in list.get_children():
+			item.show_fulltext=value
+	get():
+		return show_fulltext
+
+func _on_bt_fulltext_toggled(toggled_on: bool) -> void:
+	var _set=%bt_fulltext.button_pressed
+	show_fulltext=_set
+	

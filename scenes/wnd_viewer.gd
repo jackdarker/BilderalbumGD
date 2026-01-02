@@ -18,7 +18,7 @@ var _actual_image=null
 func displayImage(path)->void:
 	var _item=null
 	for item in %ImageList.list.get_children():
-		if(item.text==path):
+		if(item.data==path):
 			_item=item
 	if(!_item):
 		var item=ListItem.create_item(path)
@@ -40,7 +40,7 @@ func _on_bt_settings_pressed() -> void:
 
 #as resized is fred constantly it would waste a lot of processing if we continously resize image
 func _on_texture_rect_resized() -> void:
-	$HBoxContainer/TextureRect/ResizeTimer.start()
+	%TextureRect/ResizeTimer.start()
 
 func _on_resize_timer_timeout() -> void:
 	if _actual_image:
