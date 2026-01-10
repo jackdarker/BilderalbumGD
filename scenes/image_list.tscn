@@ -56,6 +56,7 @@ text = "fulltext"
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
 script = ExtResource("3_saagr")
 
 [node name="BoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]

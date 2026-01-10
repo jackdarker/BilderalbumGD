@@ -1,6 +1,7 @@
 extends Window
 ## Note: disable "embed subwindows" in project settings or min/maximize button wont show
 
+
 signal selected(path:String)
 
 @onready var SceneListItem = load("res://scenes/image_list_item.tscn")
@@ -19,7 +20,7 @@ func _ready() -> void:
 	$WndCreate.visible=false
 	Global.file_moved.connect(extRefresh)
 	item_created.connect(updateList)
-	all_item_created.connect(%ImageList.updatePageCtrl)
+	all_item_created.connect(updatePageCtrl)
 	buildTree()
 
 func can_drop_file(at_position: Vector2, data: Variant):
@@ -31,12 +32,17 @@ func drop_file(at_position: Vector2, data: Variant):
 	$WndMove.show()
 	pass
 
+func updatePageCtrl(page,pages):
+	%ImageList.updatePageCtrl(page,pages)
+	#this might be triggered by changing path, switching page or extRefresh
+	#in the last case we try to restore scroll position #TODO and focus the last item?
+	%ImageList.scroll_vertical=last_scroll_v
+
 func extRefresh(path:String):
-	#on notification of filemove
+	#on notification of filemove reload files
 	if(actual_dir!=path.get_base_dir()):
 		return
-	switchPage(0,true)
-
+	switchPage(0,true)	#this will trigger updatePageCtrl
 	
 func saveData()->Dictionary:
 	var data ={
@@ -68,8 +74,13 @@ func _on_file_dialog_file_selected(path: String) -> void:
 	#texture.set_size_override(Vector2(100,100))
 	%TextureRect.texture=texture
 
-func _displayImage(path)->void:	
+var last_selected:String=""
+var last_scroll_v:int=0
+func _displayImage(path)->void:
+	last_selected=path
+	last_scroll_v=%ImageList.scroll_vertical
 	selected.emit(path)
+
 
 func _clearImgList()->void:
 	var node=%ImageList.list
@@ -83,6 +94,7 @@ func _clearDirTree(item:TreeItem)->void:
 			n.free()
 	else:
 		%Tree.clear()
+		
 var _item:TreeItem
 func navigateTo(path:String,force:bool=true):
 	#force==true: expand the directory-tree to match path
@@ -221,6 +233,8 @@ func updateList(item):
 
 func switchPage(increment,relative):
 	var page=max(0, %ImageList.bt_page.selected)
+	if !(relative && increment==0):
+		last_scroll_v=0
 	if(relative):
 		page+=increment
 	_fetchImagesThreaded(actual_dir,page)

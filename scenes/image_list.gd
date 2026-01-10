@@ -9,6 +9,12 @@ var page:int:
 	get():
 		return bt_page.selected
 
+var scroll_vertical:int:
+	get():
+		return $VBoxContainer/ScrollContainer.scroll_vertical
+	set(value):
+		$VBoxContainer/ScrollContainer.set_deferred("scroll_vertical", value)
+
 func updatePageCtrl(page,pages):
 	bt_page.clear()
 	for i in pages:
@@ -18,7 +24,7 @@ func updatePageCtrl(page,pages):
 	bt_prev.disabled= (page<=0)
 	bt_next.disabled= (page>=(pages-1))
 
-		
+
 var show_fulltext:bool=false:
 	set(value):
 		show_fulltext=value
