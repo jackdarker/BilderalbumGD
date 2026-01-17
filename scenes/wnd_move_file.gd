@@ -33,6 +33,7 @@ func _on_bt_delete_pressed() -> void:
 	DirAccess.remove_absolute(from)
 	self.hide()
 	done.emit()
+	Global.file_moved.emit(from)
 
 func _on_edit_text_changed(new_text: String) -> void:
 	filename=$Panel/MarginContainer/GridContainer/Edit.text

@@ -1,9 +1,9 @@
 extends Control
 
-@onready var list=$VBoxContainer/ScrollContainer/BoxContainer
-@onready var bt_prev=$VBoxContainer/HBoxContainer/bt_prev
-@onready var bt_next=$VBoxContainer/HBoxContainer/bt_next
-@onready var bt_page=$VBoxContainer/HBoxContainer/OptionButton
+@onready var list:BoxContainer=$VBoxContainer/ScrollContainer/BoxContainer
+@onready var bt_prev:Button=$VBoxContainer/HBoxContainer/bt_prev
+@onready var bt_next:Button=$VBoxContainer/HBoxContainer/bt_next
+@onready var bt_page:OptionButton=$VBoxContainer/HBoxContainer/OptionButton
 
 var page:int:
 	get():

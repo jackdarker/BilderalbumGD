@@ -64,6 +64,16 @@ split_offset = 200
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="PopupMenu" type="PopupMenu" parent="HBoxContainer/HSplitContainer/ImageList"]
+unique_name_in_owner = true
+oversampling_override = 1.0
+size = Vector2i(162, 100)
+item_count = 2
+item_0/text = "Cancle"
+item_0/id = 0
+item_1/text = "Remove from list"
+item_1/id = 1
+
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/HSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2

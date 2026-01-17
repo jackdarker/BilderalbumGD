@@ -6,7 +6,8 @@ func _ready() -> void:
 		func(x): 
 			x.get_parent().remove_child(x)
 			x.queue_free())
-	pass
+	%PopupMenu.id_pressed.connect(_selectedCtxtMenu)
+	
 
 # see https://docs.godotengine.org/en/stable/tutorials/inputs/handling_quit_requests.html
 func _notification(what):
@@ -23,6 +24,7 @@ func displayImage(path)->void:
 	if(!_item):
 		var item=ListItem.create_item(path)
 		item.selected.connect(updateView)
+		item.menuRequested.connect(_showCtxtMenu)
 		%ImageList.list.add_child(item)
 	updateView(path)
 	
@@ -30,6 +32,27 @@ func updateView(path):
 	_actual_image=path
 	%TextureRect.texture=Global.loadImgToTexture(_actual_image,%TextureRect.size.x,%TextureRect.size.y)
 	%WndTagger.displayImage(_actual_image)
+
+var _ctxtItem=null
+func _showCtxtMenu(path):
+	_ctxtItem=path
+	%PopupMenu.clear()
+	%PopupMenu.add_item("Cancle", 1)
+	%PopupMenu.add_item("Remove from list", 2)
+	var _x=DisplayServer.mouse_get_position()	#takes multi-screen into acount
+	#get_global_position()    is relativ to Canvas
+	%PopupMenu.position=(_x)
+	%PopupMenu.show()
+
+func _selectedCtxtMenu(ID:int):
+	if _ctxtItem:
+		if ID==2:	#Remove
+			for item in %ImageList.list.get_children():
+				if(item.data==_ctxtItem):
+					%ImageList.list.remove_child(item)
+					break
+	_ctxtItem=null
+
 
 func _on_bt_new_browser_pressed() -> void:
 	Global.createBrowser()

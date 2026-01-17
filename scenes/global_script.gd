@@ -66,7 +66,7 @@ func createFinder():
 #region image tools
 func isSupportedImage(file_name)->bool:
 	match file_name.get_extension().to_lower() :
-		"png","jpg","jpeg","tga","webp":
+		"png","jpg","jpeg","tga","webp","bmp":
 			return(true)
 		"svg":
 			return(false)	

@@ -220,7 +220,7 @@ func fetchImagesByThread(dir_path,page):
 					count=count+1
 			file_name = dir.get_next()
 		dir.list_dir_end()
-		all_item_created.emit.call_deferred(page,ceili(count/Global.settings.Listitems))
+		all_item_created.emit.call_deferred(page,ceili(float(count)/float(Global.settings.Listitems)))
 	else:
 		print("An error occurred when trying to access the path.")
 

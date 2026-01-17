@@ -1,6 +1,7 @@
 class_name ListItem extends Control
 
 signal selected(path:String)
+signal menuRequested(path:String)
 
 static var SceneListItem
 static func create_item(path)-> Object:
@@ -64,9 +65,13 @@ func _notification(what):
 
 func _on_texture_rect_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.pressed && event.button_index==MOUSE_BUTTON_LEFT:
-			pass
-
+		if event.pressed:
+			if event.button_index==MOUSE_BUTTON_LEFT:
+				pass	#handled with focus_entered
+			if event.button_index==MOUSE_BUTTON_RIGHT:
+				menuRequested.emit(self.data)
+				
+				
 func _refresh():
 	if show_fulltext:
 		_text=data
