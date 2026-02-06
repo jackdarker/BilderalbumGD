@@ -1,6 +1,14 @@
 extends Control
 
 func _ready() -> void:
+	# Optimization for Desktop-App to consume less resources
+	# see Project->Run (advanced settings=true): 
+	# 	low processor mode = true
+	# 	max_fps =30
+	# Project -> Physics->common
+	# 	physics ticks per second = 6
+	# also switch to mobile instead compatibility, this seems to reduce GPU greatly
+	
 	Global.db=$db
 	%ImageList.list.get_children().map(
 		func(x): 

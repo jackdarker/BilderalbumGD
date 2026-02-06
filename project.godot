@@ -13,6 +13,8 @@ config_version=5
 config/name="BilderalbumGD"
 run/main_scene="uid://cdgukpb1yb3s0"
 config/features=PackedStringArray("4.5", "GL Compatibility")
+run/max_fps=30
+run/low_processor_mode=true
 boot_splash/show_image=false
 boot_splash/fullsize=false
 config/icon="res://icon.svg"
@@ -79,7 +81,10 @@ pause={
 2d_physics/layer_1="Ground"
 2d_physics/layer_2="Items"
 
+[physics]
+
+common/physics_ticks_per_second=6
+
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method="mobile"
