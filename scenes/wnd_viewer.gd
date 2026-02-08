@@ -8,6 +8,9 @@ func _ready() -> void:
 	# Project -> Physics->common
 	# 	physics ticks per second = 6
 	# also switch to mobile instead compatibility, this seems to reduce GPU greatly
+	# -> this didnt work for my old pc as it has no d3d12
+	# had to enable Rendering/Renderer/render method=gl_compatibility  which switch back to compatibility mode
+	# GPU now around <1%, CPU <1%
 	
 	Global.db=$db
 	%ImageList.list.get_children().map(

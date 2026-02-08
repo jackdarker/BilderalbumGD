@@ -87,4 +87,4 @@ common/physics_ticks_per_second=6
 
 [rendering]
 
-renderer/rendering_method="mobile"
+renderer/rendering_method="gl_compatibility"
