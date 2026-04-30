@@ -54,6 +54,8 @@ func saveData()->Dictionary:
 		"w":size.x,
 		"h":size.y,
 		"actual_dir":actual_dir,
+		"folded":$HBoxContainer/Container.folded,
+		"split_offset":$HBoxContainer/HSplitContainer.split_offset
 	}
 	return data
 
@@ -63,8 +65,11 @@ func loadData(data: Dictionary):
 	size.x=data["w"]
 	size.y=data["h"]
 	UID=data["UID"]
-	if (data["actual_dir"]):
+	if data.has("actual_dir"):
 		navigateTo.call_deferred(data["actual_dir"])
+	if data.has("split_offset"):
+		$HBoxContainer/Container.folded=data["folded"]
+		$HBoxContainer/HSplitContainer.split_offset=data["split_offset"]
 		
 func _on_file_dialog_file_selected(path: String) -> void:
 	# Load an image of any format supported by Godot from the filesystem.

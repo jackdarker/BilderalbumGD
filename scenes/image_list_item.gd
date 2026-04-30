@@ -9,6 +9,8 @@ static func create_item(path)-> Object:
 		SceneListItem = load("res://scenes/image_list_item.tscn")
 	var _Item=SceneListItem.instantiate()
 	var image = Image.load_from_file(path)
+	if !image:	#sometimes load errors ?!
+		image=load("res://assets/no_image.png")
 	var ThumbnailSize = Global.settings.Itemsize
 	var Width =0
 	var Height = 0
@@ -19,7 +21,6 @@ static func create_item(path)-> Object:
 	else:
 		Height = ThumbnailSize;
 		Width = (Height * image.get_width()) / float(image.get_height());
-
 	image.resize(Width,Height)
 	var texture = ImageTexture.create_from_image(image)
 	_Item.texture=texture
