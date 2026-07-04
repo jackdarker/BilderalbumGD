@@ -167,23 +167,25 @@ func _appendDir(item: TreeItem)->void:
 		if dir:
 			#_clearDirTree(item)	#instead of recreating all nodes we try to reuse existing
 			var _itemsKeep=[]
-			dir.list_dir_begin()
-			var file_name = dir.get_next()
-			while file_name != "":
-				if dir.current_is_dir():
-					var node:TreeItem=_getNodeByText(item,file_name)
-					if(!node):
-						node=tree.create_item(item)
-						node.set_text(0,file_name)
-						node.set_metadata(0,dir.get_current_dir().path_join(file_name))
-						tree.create_item(node)	#add a placeholder for digging deeper
-						node.collapsed=true
-					elif node.get_children().size()<=0:
-						tree.create_item(node)	#if there isnt at least one childnode, the node would not be uncollapsable and appendDir would not be triggered
-						node.collapsed=true
-					_itemsKeep.push_back(file_name)
-				file_name = dir.get_next()
-			dir.list_dir_end()
+			#dir.list_dir_begin()
+			#var file_name = dir.get_next()
+			#while file_name != "":
+			var _dirs:=dir.get_directories()
+			for file_name in _dirs:
+				#if dir.current_is_dir():
+				var node:TreeItem=_getNodeByText(item,file_name)
+				if(!node):
+					node=tree.create_item(item)
+					node.set_text(0,file_name)
+					node.set_metadata(0,dir.get_current_dir().path_join(file_name))
+					tree.create_item(node)	#add a placeholder for digging deeper
+					node.collapsed=true
+				elif node.get_children().size()<=0:
+					tree.create_item(node)	#if there isnt at least one childnode, the node would not be uncollapsable and appendDir would not be triggered
+					node.collapsed=true
+				_itemsKeep.push_back(file_name)
+				#file_name = dir.get_next()
+			#dir.list_dir_end()
 			for node in item.get_children():
 				if(!_itemsKeep.find(node.get_text(0))>=0):
 					node.free()
@@ -212,18 +214,20 @@ func fetchImagesByThread(dir_path,page):
 	var end=Global.settings.Listitems*(1+page)
 	var count=0
 	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "":
-			if dir.current_is_dir():
-				pass
-			else:
-				if Global.isSupportedImage(file_name):
-					if (count>=start && count <end):
-						var path=dir_path.path_join(file_name)
-						item_created.emit.call_deferred(_create_item(path))
-					count=count+1
-			file_name = dir.get_next()
+		#dir.list_dir_begin()
+		#var file_name = dir.get_next()
+		#while file_name != "":
+		#	if dir.current_is_dir():
+		#		pass
+		#	else:
+		var _files = dir.get_files()
+		for file_name in _files:
+			if Global.isSupportedImage(file_name):
+				if (count>=start && count <end):
+					var path=dir_path.path_join(file_name)
+					item_created.emit.call_deferred(_create_item(path))
+				count=count+1
+		#file_name = dir.get_next()
 		dir.list_dir_end()
 		all_item_created.emit.call_deferred(page,ceili(float(count)/float(Global.settings.Listitems)))
 	else:
