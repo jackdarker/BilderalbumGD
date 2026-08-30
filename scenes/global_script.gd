@@ -1,6 +1,6 @@
 extends Node
 
-signal file_moved(path:String)
+signal file_moved(from:String,to:String)
 
 var db:TagDatabase =null
 var current_scene = null

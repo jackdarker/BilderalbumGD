@@ -38,6 +38,7 @@ enabled=PackedStringArray("res://addons/godot-sqlite/plugin.cfg")
 
 Items=""
 Persist=""
+Browser=""
 
 [input]
 

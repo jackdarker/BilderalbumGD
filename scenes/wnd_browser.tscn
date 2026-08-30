@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://b0vrw0uwpwgyv" path="res://scenes/wnd_move_file.tscn" id="3_q3mf3"]
 [ext_resource type="PackedScene" uid="uid://epiwq2dod5ub" path="res://scenes/wnd_create_dir.tscn" id="4_1tdb2"]
 
-[node name="window" type="Window" groups=["Items", "Persist"]]
+[node name="window" type="Window" groups=["Browser", "Items", "Persist"]]
 oversampling_override = 1.0
 title = "Browser"
 position = Vector2i(0, 36)
@@ -50,6 +50,16 @@ layout_mode = 2
 [node name="ImageList" parent="HBoxContainer/HSplitContainer" instance=ExtResource("2_oiot5")]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="PopupMenu" type="PopupMenu" parent="HBoxContainer/HSplitContainer/ImageList"]
+unique_name_in_owner = true
+oversampling_override = 1.0
+size = Vector2i(162, 100)
+item_count = 2
+item_0/text = "Cancle"
+item_0/id = 0
+item_1/text = "Remove from list"
+item_1/id = 1
 
 [node name="FileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true

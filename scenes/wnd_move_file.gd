@@ -22,18 +22,19 @@ func _on_bt_cancle_pressed() -> void:
 	self.hide()
 
 func _on_bt_ok_pressed() -> void:
-	if(DirAccess.copy_absolute(from,to.path_join(filename))==Error.OK):
+	var _new=to.path_join(filename)
+	if(DirAccess.copy_absolute(from,_new)==Error.OK):
 		DirAccess.remove_absolute(from)
 	self.hide()
 	done.emit()
-	Global.file_moved.emit(from)
+	Global.file_moved.emit(from,_new)
 
 
 func _on_bt_delete_pressed() -> void:
 	DirAccess.remove_absolute(from)
 	self.hide()
 	done.emit()
-	Global.file_moved.emit(from)
+	Global.file_moved.emit(from,"")
 
 func _on_edit_text_changed(new_text: String) -> void:
 	filename=$Panel/MarginContainer/GridContainer/Edit.text

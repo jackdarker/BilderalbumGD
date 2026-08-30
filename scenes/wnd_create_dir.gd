@@ -25,7 +25,7 @@ func _on_bt_ok_pressed() -> void:
 	DirAccess.make_dir_recursive_absolute(_new)
 	self.hide()
 	done.emit(_new)
-	Global.file_moved.emit(from)
+	Global.file_moved.emit(from,_new)
 
 
 func _on_edit_text_changed(new_text: String) -> void:

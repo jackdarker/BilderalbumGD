@@ -18,7 +18,7 @@ func _ready() -> void:
 			x.get_parent().remove_child(x)
 			x.queue_free())
 	%PopupMenu.id_pressed.connect(_selectedCtxtMenu)
-	
+	Global.file_moved.connect(extRefresh)
 
 # see https://docs.godotengine.org/en/stable/tutorials/inputs/handling_quit_requests.html
 func _notification(what):
@@ -43,6 +43,15 @@ func updateView(path):
 	_actual_image=path
 	%TextureRect.texture=Global.loadImgToTexture(_actual_image,%TextureRect.size.x,%TextureRect.size.y)
 	%WndTagger.displayImage(_actual_image)
+
+func extRefresh(from:String,to:String):
+	#on notification of filemove reload files
+	%ImageList.list.get_children().map(
+		func(x:ListItem): 
+			if(x.data==from):
+				x.get_parent().remove_child(x)
+				x.queue_free())
+
 
 var _ctxtItem=null
 func _showCtxtMenu(path):
@@ -86,7 +95,6 @@ func _on_bt_edit_tags_pressed() -> void:
 
 func _on_bt_edit_tags_2_pressed() -> void:
 	%WndCreateTag.visible=!%WndCreateTag.visible
-
 
 func _on_bt_new_finder_pressed() -> void:
 	Global.createFinder()

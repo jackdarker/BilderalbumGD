@@ -1,4 +1,4 @@
-extends Window
+class_name WndBrowser extends Window
 ## Note: disable "embed subwindows" in project settings or min/maximize button wont show
 
 
@@ -12,10 +12,11 @@ func _ready() -> void:
 	%ImageList.bt_prev.pressed.connect(switchPage.bind(-1,true))
 	%ImageList.bt_next.pressed.connect(switchPage.bind(1,true))
 	%ImageList.bt_page.item_selected.connect(switchPage.bind(false))
+	%PopupMenu.id_pressed.connect(_selectedCtxtMenu)
 	
 	%ImageList.list.get_parent().can_drop=can_drop_file
 	%ImageList.list.get_parent().drop=drop_file
-	$WndMove.done.connect(switchPage.bind(0,true))
+	#$WndMove.done.connect(switchPage.bind(0,true))
 	$WndMove.visible=false
 	$WndCreate.visible=false
 	Global.file_moved.connect(extRefresh)
@@ -30,7 +31,6 @@ func drop_file(at_position: Vector2, data: Variant):
 	$WndMove.from=(data as String)
 	$WndMove.to=actual_dir
 	$WndMove.show()
-	pass
 
 func updatePageCtrl(page,pages):
 	%ImageList.updatePageCtrl(page,pages)
@@ -38,9 +38,9 @@ func updatePageCtrl(page,pages):
 	#in the last case we try to restore scroll position #TODO and focus the last item?
 	%ImageList.scroll_vertical=last_scroll_v
 
-func extRefresh(path:String):
+func extRefresh(from:String,to:String):
 	#on notification of filemove reload files
-	if(actual_dir!=path.get_base_dir()):
+	if(actual_dir!=from.get_base_dir() && actual_dir!=to.get_base_dir()):
 		return
 	switchPage(0,true)	#this will trigger updatePageCtrl
 	
@@ -105,6 +105,8 @@ func navigateTo(path:String,force:bool=true):
 	#force==true: expand the directory-tree to match path
 	#force==false: if the path is unfolded, update the second-last dir to refresh new/deleted subdirs
 	var _dirs=path.split("/")
+	if(path[0]=="/"):	#TODO for linux
+		_dirs[0]="/"
 	_item = %Tree.get_root()
 	var _subitems
 	for i in _dirs.size():
@@ -128,6 +130,7 @@ func navigateTo(path:String,force:bool=true):
 		var t=_item.get_text(0)
 		_item.uncollapse_tree()
 		_item.get_tree().set_selected(_item,0)
+		_item.get_tree().scroll_to_item(_item)
 	pass
 
 
@@ -140,7 +143,7 @@ func buildTree() -> void:
 	var d=DirAccess.get_drive_count()
 	for i in d: #add drives to root
 		var drive:TreeItem=tree.create_item(root)
-		var letter=DirAccess.get_drive_name(i)
+		var letter=DirAccess.get_drive_name(i)	#in linux this is / ?
 		drive.set_text(0,letter)
 		drive.set_metadata(0,letter)
 		drive.collapsed=true
@@ -238,6 +241,7 @@ func _create_item(path)-> Object:
 
 func updateList(item):
 	item.selected.connect(_displayImage)
+	item.menuRequested.connect(_showCtxtMenu)
 	%ImageList.list.add_child(item)
 
 func switchPage(increment,relative):
@@ -287,3 +291,29 @@ func _on_bt_create_dir_pressed() -> void:
 		if(res[0][0]==$WndCreate.done.get_name()):
 			navigateTo(res[0][1])
 		#myPromise.free()
+
+var _ctxtItem=null
+func _showCtxtMenu(path):
+	_ctxtItem=path
+	%PopupMenu.clear()
+	%PopupMenu.add_item("Cancle", 1)
+	var _wnds:Array=get_tree().get_nodes_in_group("Browser").filter(func(x):return(x!=self))
+	for i in range(_wnds.size()):
+		var _bw=_wnds[i] as WndBrowser
+		%PopupMenu.add_item("move to "+str(_bw.actual_dir), 1000+i)
+		%PopupMenu.get_item_index(1000+i)
+		%PopupMenu.set_item_metadata(%PopupMenu.get_item_index(1000+i),_bw.actual_dir)
+	var _x=DisplayServer.mouse_get_position()	#takes multi-screen into acount
+	#get_global_position()    is relativ to Canvas
+	%PopupMenu.position=(_x)
+	%PopupMenu.show()
+
+func _selectedCtxtMenu(ID:int):
+	if _ctxtItem:
+		var _meta=%PopupMenu.get_item_metadata(%PopupMenu.get_item_index(ID))
+		if ID>=1000 && ID<=1999:	#Move
+			$WndMove.from=(_ctxtItem as String)
+			$WndMove.to=_meta
+			$WndMove.show()
+
+	_ctxtItem=null
